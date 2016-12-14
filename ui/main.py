@@ -3,13 +3,13 @@
 # Form implementation generated from reading ui file 'main.ui'
 #
 # Created: Sat Dec 10 14:49:23 2016
-#      by: PyQt5 UI code generator 5.2.1
+# by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from table_model import *
 import pandas as pd
+from normalization_dialog import NormalizationDialog
 import numpy as np
 
 
@@ -25,9 +25,9 @@ class TableModel(QtCore.QAbstractTableModel):
         return self.datatable.shape[0]
 
     def columnCount(self, parent=QtCore.QModelIndex()):
-        if len(self.datatable.shape)>1:
+        if len(self.datatable.shape) > 1:
             return self.datatable.shape[1]
-        if self.datatable.shape[0]=0:
+        if self.datatable.shape[0] == 0:
             return 1
         return 0
 
@@ -41,10 +41,8 @@ class TableModel(QtCore.QAbstractTableModel):
 
     def headerData(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-            print(self.datatable.columns.values[col])
             return QtCore.QVariant(self.datatable.columns.values[col])
         if orientation == QtCore.Qt.Vertical and role == QtCore.Qt.DisplayRole:
-            print(self.datatable.index.values[col])
             return QtCore.QVariant(str(self.datatable.index.values[col]))
         return QtCore.QVariant()
 
@@ -54,10 +52,11 @@ class TableModel(QtCore.QAbstractTableModel):
     def get_data(self):
         return self.datatable
 
-class Ui_MainWindow(QtWidgets.QMainWindow):
 
+class Ui_MainWindow(QtWidgets.QMainWindow):
     app_name = "Effective Clustering Toolkit"
     _translate = QtCore.QCoreApplication.translate
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -92,6 +91,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuFile.setObjectName("menuFile")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
+        self.menuEdit = QtWidgets.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         self.menuLayout = QtWidgets.QMenu(self.menuView)
         self.menuLayout.setObjectName("menuLayout")
         self.menuView.addMenu(self.menuLayout)
@@ -118,6 +119,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPanelLayout.triggered.connect(self.panel_layout)
         self.menuLayout.addAction(self.actionPanelLayout)
 
+        # normalize action
+        self.actionNormalize = QtWidgets.QAction(MainWindow)
+        self.actionNormalize.setObjectName("actionNormalize")
+        self.actionNormalize.triggered.connect(self.normalize)
+        self.menuEdit.addAction(self.actionNormalize)
+
         # exit action
         self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
@@ -126,8 +133,35 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
+        self.menubar.addAction(self.menuEdit.menuAction())
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def normalize(self):
+        result = NormalizationDialog.open()
+        if result:
+            df = self.tablePrepared.model().get_data()
+            center = None
+            range = None
+            if result.center == NormalizationDialog.Result.Center.Mean:
+                center = df.mean()
+            if result.center == NormalizationDialog.Result.Center.Median:
+                center = df.median()
+            if result.center == NormalizationDialog.Result.Center.Minimum:
+                center = df.min()
+            if result.center == NormalizationDialog.Result.Center.MinkovskyCenter:
+                raise Error('Unsupported yet')
+            if result.range == NormalizationDialog.Result.Range.AbsoluteDeviation:
+                range = df.std()
+            if result.range == NormalizationDialog.Result.Range.Semirange:
+                range = df.max()-df.min()
+            if result.range == NormalizationDialog.Result.Range.AbsoluteDeviation:
+                raise Error('Unsupported yet')
+            if center is None or range is None:
+                raise Error('Undefined error')
+            new_df = (df - center)/range
+            model = TableModel(new_df)
+            self.tablePrepared.setModel(model)
 
     def open(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '\home')[0]
@@ -137,15 +171,29 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         MainWindow.setWindowTitle(Ui_MainWindow._translate("MainWindow", Ui_MainWindow.app_name) + ": " + fname)
 
     def prepare(self, column):
-        # name = self.tableRaw.horizontalHeaderItem(column).text()
         df_raw = self.tableRaw.model().get_data()
         ds = df_raw[df_raw.columns[column]]
         df = self.tablePrepared.model().get_data()
-        if len(df)==0:
-            self.tablePrepared.setModel(TableModel(pd.DataFrame(ds)))
-        else:
+        try:
+            pd.to_numeric(ds)
+            if len(df) == 0:
+                df = pd.DataFrame()
             df[ds.name] = ds
-            self.tablePrepared.setModel(TableModel(df))
+            model = TableModel(df)
+            self.tablePrepared.setModel(model)
+        except ValueError:
+            from nominal_feature_dialog import NominalFeatureDialog
+            is_ok = NominalFeatureDialog.open()
+            if is_ok:
+                if len(df) == 0:
+                     df = pd.DataFrame()
+                unique_values = ds.unique()
+                for uv in unique_values:
+                    new_col = pd.Series(data=0, index=ds.index)
+                    new_col[ds == uv] = 1
+                    df[ds.name+str(uv)] = new_col
+                model = TableModel(df)
+                self.tablePrepared.setModel(model)
 
 
     def showHeaderMenu(self, point):
@@ -185,9 +233,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tabWidget.addTab(self.tabPrepared, "")
         # add to layout
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabRaw), Ui_MainWindow._translate("MainWindow", "Raw Data"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabPrepared), Ui_MainWindow._translate("MainWindow", "Prepared Data"))
-        print('Panel Layout')
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabRaw),
+                                  Ui_MainWindow._translate("MainWindow", "Raw Data"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabPrepared),
+                                  Ui_MainWindow._translate("MainWindow", "Prepared Data"))
 
     def panel_layout(self):
         self._clean()
@@ -195,7 +244,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.splitter.addWidget(self.tableRaw)
         self.splitter.addWidget(self.tablePrepared)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
-        print('Tab Layout')
 
     def close_app(self):
         sys.exit()
@@ -205,8 +253,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", Ui_MainWindow.app_name))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuLayout.setTitle(_translate("MainWindow", "Layout"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
+        self.actionNormalize.setText(_translate("MainWindow", "Normalize"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionPanelLayout.setText(_translate("MainWindow", "Panel Layout"))
         self.actionTabLayout.setText(_translate("MainWindow", "Tab Layout"))
@@ -216,6 +266,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
