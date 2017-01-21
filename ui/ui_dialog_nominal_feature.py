@@ -65,10 +65,8 @@ class NominalFeatureDialog(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    print(NominalFeatureDialog.open())
-    exit()
     self = QtWidgets.QDialog()
     ui = NominalFeatureDialog()
-    self.show()
+    ui.open()
     sys.exit(app.exec_())
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class PandasTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data=pd.DataFrame(), parent=None, *args):
+    def __init__(self, data=pd.DataFrame(), *args):
         super(PandasTableModel, self).__init__()
         self.datatable = data
         self.layout = 'Panel'
@@ -44,12 +44,30 @@ class PandasTableModel(QtCore.QAbstractTableModel):
         return self.datatable
 
 
-class RawTableModel(PandasTableModel):
-    def __init__(self, data=pd.DataFrame(), parent=None, *args):
-        super(RawTableModel, self).__init__(data=data, parent=parent)
-
-
 class NormalizedTableModel(PandasTableModel):
-   def __init__(self, normalization, data=pd.DataFrame(), parent=None):
-       super(NormalizedTableModel, self).__init__(data=data, parent=parent)
-       self.norm_data = super.datatable
+    def __init__(self, data, normalization, *args):
+        super(NormalizedTableModel, self).__init__(data=data)
+        self.norm = normalization
+        self.norm_data = self.norm.apply(self.datatable)
+
+
+    def update(self, dataIn):
+        self.datatable = dataIn
+        self.norm_data = self.norm.apply(self.datatable)
+
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        if role == QtCore.Qt.DisplayRole:
+            i = index.row()
+            j = index.column()
+            return '{0}'.format(self.norm_data.iget_value(i, j))
+        else:
+            return QtCore.QVariant()
+
+    def set_norm(self, normalization):
+        self.norm = normalization
+        self.update(self.datatable)
+
+
+class RawTableModel(PandasTableModel):
+    def __init__(self, data=pd.DataFrame()):
+        super(RawTableModel, self).__init__(data=data)
