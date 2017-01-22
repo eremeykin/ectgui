@@ -15,6 +15,7 @@ from normalization import Normalization
 class NormalizationDialog(QtWidgets.QDialog):
     def __init__(self, parent):
         super(NormalizationDialog, self).__init__(parent)
+        self.mink = False
         self.parent = parent
         self.setObjectName("Dialog")
         self.resize(329, 161)
@@ -59,8 +60,29 @@ class NormalizationDialog(QtWidgets.QDialog):
         self.combo_box_1.setMinimumSize(QtCore.QSize(150, 0))
         self.combo_box_1.setMaximumSize(QtCore.QSize(150, 16777215))
         self.combo_box_1.setObjectName("combo_box_1")
+        self.combo_box_1.currentIndexChanged.connect(self.cbox_1_handler)
         self.horizontal_layout.addWidget(self.combo_box_1)
         self.vertical_layout.addLayout(self.horizontal_layout)
+
+        # text edit for minkovsky power
+        self.horizontal_layout_4 = QtWidgets.QHBoxLayout()
+        self.horizontal_layout_4.setObjectName("horizontal_layout_4")
+        self.label_4 = QtWidgets.QLabel(self)
+        self.label_4.setObjectName("label_4")
+        self.horizontal_layout_4.addWidget(self.label_4)
+        spacer_item_3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontal_layout_4.addItem(spacer_item_3)
+        self.text_box_1 = QtWidgets.QLineEdit(self)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.text_box_1.sizePolicy().hasHeightForWidth())
+        self.text_box_1.setSizePolicy(size_policy)
+        self.text_box_1.setMinimumSize(QtCore.QSize(150, 0))
+        self.text_box_1.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.text_box_1.setObjectName("text_box_1")
+        self.horizontal_layout_4.addWidget(self.text_box_1)
+        self.vertical_layout.addLayout(self.horizontal_layout_4)
 
         # range
         self.horizontal_layout_2 = QtWidgets.QHBoxLayout()
@@ -100,18 +122,43 @@ class NormalizationDialog(QtWidgets.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
         self.set_settings()
 
+    def accept(self):
+        try:
+            if self.mink:
+                float(self.text_box_1.text())
+            QtWidgets.QDialog.accept(self)
+        except ValueError:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Please, enter proper power (float value)")
+            msg.setWindowTitle("Wrong power value")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+
+    def cbox_1_handler(self):
+        self.mink = False
+        if Normalization.Center.get(self.combo_box_1.currentText()) == Normalization.Center.MINKOVSKY_CENTER:
+            self.mink = True
+        self.disable()
+
     def set_settings(self):
         norm = self.parent.settings.normalization
         self.radio_button.setChecked(not norm.enabled)
         self.combo_box_1.setCurrentText(norm.center_type.name)
         self.combo_box_2.setCurrentText(norm.range_type.name)
+        self.text_box_1.setText(str(norm.p))
 
     def disable(self):
         state = self.radio_button.isChecked()
         self.label_2.setDisabled(state)
         self.label_3.setDisabled(state)
+        self.label_4.setDisabled(state)
         self.combo_box_1.setDisabled(state)
         self.combo_box_2.setDisabled(state)
+        self.text_box_1.setDisabled(state)
+        if not self.mink:
+            self.label_4.setDisabled(True)
+            self.text_box_1.setDisabled(True)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -119,6 +166,7 @@ class NormalizationDialog(QtWidgets.QDialog):
         self.label_1.setText(_translate("Dialog", "Please, specify normalization settings:"))
         self.label_2.setText(_translate("Dialog", "Center:"))
         self.label_3.setText(_translate("Dialog", "Range:"))
+        self.label_4.setText(_translate("Dialog", "Minkovsky Power:"))
         self.radio_button.setText(_translate("Dialog", "Normalization disabled"))
         self.combo_box_1.addItems([x.name for x in Normalization.Center.all()])
         self.combo_box_2.addItems([x.name for x in Normalization.Range.all()])
@@ -126,7 +174,10 @@ class NormalizationDialog(QtWidgets.QDialog):
     def get_result(self):
         center = Normalization.Center.get(self.combo_box_1.currentText())
         range = Normalization.Range.get(self.combo_box_2.currentText())
-        return Normalization(center, range, not self.radio_button.isChecked())
+        p = None
+        if self.mink:
+            p = float(self.text_box_1.text())
+        return Normalization(center, range, not self.radio_button.isChecked(), p)
 
     @staticmethod
     def open(parent):

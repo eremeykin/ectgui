@@ -1,7 +1,8 @@
 __author__ = 'eremeykin'
-import collections
 import pandas as pd
+import numpy as np
 from collections import namedtuple
+from scipy.optimize import fmin_tnc
 
 
 class Normalization(object):
@@ -16,8 +17,7 @@ class Normalization(object):
             for item in cls.all():
                 if item.name == name:
                     return item
-            raise Exception('Unknown Type: '+str(name))
-
+            raise Exception('Unknown Type: ' + str(name))
 
     class Center(Type):
         CenterType = namedtuple('CenterType', 'value name')
@@ -34,10 +34,13 @@ class Normalization(object):
         STANDARD_DEVIATION = RangeType(2 ** 7, 'Standard deviation')
         ABSOLUTE_DEVIATION = RangeType(2 ** 8, 'Absolute deviation')
 
-    def __init__(self, center, range, enabled=False):
+    def __init__(self, center, range, enabled=False, p=None):
         self.center_type = center
         self.range_type = range
         self.enabled = enabled
+        self.p = p
+        if self.center_type == Normalization.Center.MINKOVSKY_CENTER and self.p is None:
+            raise Exception('p (power) is required for minkovsky center calculation')
 
     def apply(self, data):
         if not self.enabled:
@@ -59,7 +62,10 @@ class Normalization(object):
         elif self.center_type == Normalization.Center.MEDIAN:
             center = series.median()
         elif self.center_type == Normalization.Center.MINKOVSKY_CENTER:
-            raise Exception('Unsupported minkovsky center')
+            def D(X, a):
+                return np.sum(np.abs(X - a) ** self.p) / len(X)
+
+            center = fmin_tnc(func=lambda x: D(series, x), x0=np.mean(series), approx_grad=True)[0]
         else:
             raise Exception('Unknown center type')
         if self.range_type == Normalization.Range.NONE_RANGE:

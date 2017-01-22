@@ -9,7 +9,9 @@
 import pandas as pd
 from PyQt5 import QtCore, QtWidgets
 
-from table_models import RawTableModel
+from normalization import Normalization
+
+from table_models import RawTableModel, NormalizedTableModel
 
 
 class Ui_EctMainWindow(object):
@@ -23,7 +25,7 @@ class Ui_EctMainWindow(object):
         self.central_widget.setObjectName("central_widget")
         self.grid_layout = QtWidgets.QGridLayout(self.central_widget)
         self.grid_layout.setObjectName("grid_layout")
-        self.grid_layout.setContentsMargins(3, 3, 3, 3)
+        self.grid_layout.setContentsMargins(2, 2, 2, 2)
         # table 1
         self.table_raw = QtWidgets.QTableView()
         self.table_raw.setModel(RawTableModel(pd.DataFrame()))
@@ -34,12 +36,16 @@ class Ui_EctMainWindow(object):
         header.customContextMenuRequested.connect(ect_main_window.show_header_menu)
         # table 2
         self.table_normalized = QtWidgets.QTableView()
-        self.table_normalized.setModel(RawTableModel(pd.DataFrame()))
+        norm_table_model = NormalizedTableModel(pd.DataFrame(),
+                                                Normalization(Normalization.Center.NONE_CENTER,
+                                                              Normalization.Range.NONE_RANGE))
+        self.table_normalized.setModel(norm_table_model)
         self.table_normalized.setObjectName("table_normalized")
         # tabRaw
         self.tab_raw = QtWidgets.QWidget()
         self.tab_raw.setObjectName("tab_raw")
         self.grid_layout_raw = QtWidgets.QGridLayout(self.tab_raw)
+        self.grid_layout_raw.setContentsMargins(2, 2, 2, 2)
         self.grid_layout_raw.setObjectName("grid_layout_raw")
         # tabNormalized
         self.tab_normalized = QtWidgets.QWidget()
@@ -48,6 +54,7 @@ class Ui_EctMainWindow(object):
         self.grid_layout_normalized.setObjectName("grid_layout_normalized")
         # add tables
         self.grid_layout_normalized.addWidget(self.table_normalized)
+        self.grid_layout_normalized.setContentsMargins(2, 2, 2, 2)
         self.grid_layout_raw.addWidget(self.table_raw)
 
         ect_main_window.action_panel_layout()

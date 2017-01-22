@@ -26,7 +26,7 @@ class PandasTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.DisplayRole:
             i = index.row()
             j = index.column()
-            return '{0}'.format(self.datatable.iget_value(i, j))
+            return '{0}'.format(self.datatable.iat[i, j])
         else:
             return QtCore.QVariant()
 
@@ -59,7 +59,7 @@ class NormalizedTableModel(PandasTableModel):
         if role == QtCore.Qt.DisplayRole:
             i = index.row()
             j = index.column()
-            return '{0}'.format(self.norm_data.iget_value(i, j))
+            return '{0}'.format(self.norm_data.iat[i, j])
         else:
             return QtCore.QVariant()
 
