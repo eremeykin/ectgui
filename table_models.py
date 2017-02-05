@@ -7,7 +7,9 @@ class PandasTableModel(QtCore.QAbstractTableModel):
     def __init__(self, data=pd.DataFrame(), *args):
         super(PandasTableModel, self).__init__()
         self.datatable = data
-        self.layout = 'Panel'
+        self.layout = 'Panel'  # TODO Delete?
+        if self.columnCount() == 0:
+            self.datatable = pd.DataFrame()
 
     def update(self, dataIn):
         self.datatable = dataIn
@@ -50,7 +52,6 @@ class NormalizedTableModel(PandasTableModel):
         self.norm = normalization
         self.norm_data = self.norm.apply(self.datatable)
 
-
     def update(self, dataIn):
         self.datatable = dataIn
         self.norm_data = self.norm.apply(self.datatable)
@@ -67,7 +68,19 @@ class NormalizedTableModel(PandasTableModel):
         self.norm = normalization
         self.update(self.datatable)
 
+    def get_data(self):
+        return self.norm_data
+
 
 class RawTableModel(PandasTableModel):
     def __init__(self, data=pd.DataFrame()):
         super(RawTableModel, self).__init__(data=data)
+
+
+class WeightTableModel(PandasTableModel):
+    def flags(self, index):
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
+
+    def setData(self, index, value, role=QtCore.Qt.EditRole):
+        c = list(self.datatable)
+        self.datatable.set_value(index='W', col=c[index.column()], value=value)

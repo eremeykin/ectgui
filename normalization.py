@@ -21,11 +21,11 @@ class Normalization(object):
 
     class Center(Type):
         CenterType = namedtuple('CenterType', 'value name')
-        NONE_CENTER = CenterType(0, 'None center')
+        NONE_CENTER = CenterType(0, 'No centring')
         MINIMUM = CenterType(2 ** 1, 'Minimum')
         MEAN = CenterType(2 ** 3, 'Mean')
         MEDIAN = CenterType(2 ** 3, 'Median')
-        MINKOVSKY_CENTER = CenterType(2 ** 4, 'Minkovsky center')
+        MINKOWSKI_CENTER = CenterType(2 ** 4, 'Minkowski center')
 
     class Range(Type):
         RangeType = namedtuple('RangeType', 'value name')
@@ -39,8 +39,8 @@ class Normalization(object):
         self.range_type = range
         self.enabled = enabled
         self.p = p
-        if self.center_type == Normalization.Center.MINKOVSKY_CENTER and self.p is None:
-            raise Exception('p (power) is required for minkovsky center calculation')
+        if self.center_type == Normalization.Center.MINKOWSKI_CENTER and self.p is None:
+            raise Exception('p (power) is required for minkowski center calculation')
 
     def apply(self, data):
         if not self.enabled:
@@ -61,7 +61,7 @@ class Normalization(object):
             center = series.mean()
         elif self.center_type == Normalization.Center.MEDIAN:
             center = series.median()
-        elif self.center_type == Normalization.Center.MINKOVSKY_CENTER:
+        elif self.center_type == Normalization.Center.MINKOWSKI_CENTER:
             def D(X, a):
                 return np.sum(np.abs(X - a) ** self.p) / len(X)
 
@@ -75,7 +75,7 @@ class Normalization(object):
         elif self.range_type == Normalization.Range.STANDARD_DEVIATION:
             rng = series.std()
         elif self.range_type == Normalization.Range.ABSOLUTE_DEVIATION:
-            raise Exception('Unsupported absolute deviation')
+            rng = ((series - series.median()).abs()).mean()
         else:
             raise Exception('Unknown range type')
         result = (series - center) / rng

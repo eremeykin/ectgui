@@ -62,20 +62,59 @@ class EctMainWindow(QtWidgets.QMainWindow):
                 model = NormalizedTableModel(df, self.settings.normalization)
                 self.ui.table_normalized.setModel(model)
 
-    def show_header_menu(self, point):
-        column = self.ui.table_raw.horizontalHeader().logicalIndexAt(point.x())
+    def show_header_menu(self, point, table):
+        if table is None:
+            return
+        column = table.horizontalHeader().logicalIndexAt(point.x())
+        table_model = table.model()
         # show menu about the column
         menu = QtWidgets.QMenu(self)
-        action = QtWidgets.QAction(self)
-        action.setObjectName("actionNormalize")
-        action.triggered.connect(lambda x: self.action_normalize(column))
-        action.setText(self.ui.translate("Normalize"))
-        menu.addAction(action)
-        menu.popup(self.ui.table_raw.horizontalHeader().mapToGlobal(point))
+        if isinstance(table_model, RawTableModel):
+            action_norm = QtWidgets.QAction(self)
+            action_norm.setObjectName("actionNormalize")
+            action_norm.triggered.connect(lambda x: self.action_normalize(column))
+            action_norm.setText(self.ui.translate("Normalize"))
+            menu.addAction(action_norm)
+        if isinstance(table_model, NormalizedTableModel):
+            action_del = QtWidgets.QAction(self)
+            action_del.setObjectName("actionDelete")
+            action_del.triggered.connect(lambda x: self.action_delete(column))
+            action_del.setText(self.ui.translate("Delete"))
+            menu.addAction(action_del)
+
+        action_hist = QtWidgets.QAction(self)
+        action_hist.setObjectName("actionHistogram")
+        action_hist.triggered.connect(lambda x: self.action_hist(table, column))
+        action_hist.setText(self.ui.translate("Histogram"))
+        menu.addAction(action_hist)
+        menu.popup(table.horizontalHeader().mapToGlobal(point))
+
+    def action_hist(self, table, column):
+        import numpy as np
+        import matplotlib.mlab as mlab
+        import matplotlib.pyplot as plt
+
+        x = table.model().get_data()
+        x = x[x.columns[column]]
+        print(x)
+        n, bins, patches = plt.hist(x, 50, normed=0, facecolor='green', alpha=0.95)
+
+        plt.xlabel('Values')
+        plt.ylabel('Count')
+
+        plt.title('$\mathrm{{Histogram\ of\ {:s}:}}\ \mu={:.2f},\ \sigma={:.2f}$'.format(x.name, x.mean(), x.std()))
+        plt.grid(True)
+        plt.show()
 
     def _clean(self):
         for i in reversed(range(self.ui.grid_layout.count())):
             self.ui.grid_layout.itemAt(i).widget().setParent(None)
+
+    def action_delete(self, column):
+        df = self.ui.table_normalized.model().get_data()
+        df.drop(df.columns[[column]], axis=1, inplace=True)
+        model = NormalizedTableModel(df, self.settings.normalization)
+        self.ui.table_normalized.setModel(model)
 
     def action_tab_layout(self):
         # tabWidget
@@ -110,6 +149,20 @@ class EctMainWindow(QtWidgets.QMainWindow):
         # add to splitter
         self._clean()
         self.ui.grid_layout.addWidget(self.ui.splitter)
+
+    def action_clustering(self):
+        from ui.ui_dialog_run_clustering import RunClusteringDialog
+        dialog = RunClusteringDialog.open(self)
+        return
+        from eclustering.pattern_init import a_pattern_init
+        from eclustering.a_ward import a_ward
+        data = self.ui.table_normalized.model().get_data()
+        data_m = data.as_matrix()
+        labels, centroids = a_pattern_init(data_m)
+        labels = a_ward(data_m, K_star=4, labels=labels)
+        data['Cluster#'] = labels
+        model = NormalizedTableModel(data, self.settings.normalization)
+        self.ui.table_normalized.setModel(model)
 
     def action_exit(self):
         sys.exit()

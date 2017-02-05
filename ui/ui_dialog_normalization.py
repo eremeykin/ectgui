@@ -64,7 +64,7 @@ class NormalizationDialog(QtWidgets.QDialog):
         self.horizontal_layout.addWidget(self.combo_box_1)
         self.vertical_layout.addLayout(self.horizontal_layout)
 
-        # text edit for minkovsky power
+        # text edit for minkowski power
         self.horizontal_layout_4 = QtWidgets.QHBoxLayout()
         self.horizontal_layout_4.setObjectName("horizontal_layout_4")
         self.label_4 = QtWidgets.QLabel(self)
@@ -137,7 +137,7 @@ class NormalizationDialog(QtWidgets.QDialog):
 
     def cbox_1_handler(self):
         self.mink = False
-        if Normalization.Center.get(self.combo_box_1.currentText()) == Normalization.Center.MINKOVSKY_CENTER:
+        if Normalization.Center.get(self.combo_box_1.currentText()) == Normalization.Center.MINKOWSKI_CENTER:
             self.mink = True
         self.disable()
 
@@ -166,7 +166,7 @@ class NormalizationDialog(QtWidgets.QDialog):
         self.label_1.setText(_translate("Dialog", "Please, specify normalization settings:"))
         self.label_2.setText(_translate("Dialog", "Center:"))
         self.label_3.setText(_translate("Dialog", "Range:"))
-        self.label_4.setText(_translate("Dialog", "Minkovsky Power:"))
+        self.label_4.setText(_translate("Dialog", "Minkowski Power:"))
         self.radio_button.setText(_translate("Dialog", "Normalization disabled"))
         self.combo_box_1.addItems([x.name for x in Normalization.Center.all()])
         self.combo_box_2.addItems([x.name for x in Normalization.Range.all()])

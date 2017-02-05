@@ -31,9 +31,10 @@ class Ui_EctMainWindow(object):
         self.table_raw.setModel(RawTableModel(pd.DataFrame()))
         self.table_raw.setObjectName("table_raw")
         self.table_raw.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        header = self.table_raw.horizontalHeader()
-        header.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        header.customContextMenuRequested.connect(ect_main_window.show_header_menu)
+        header_raw = self.table_raw.horizontalHeader()
+        header_raw.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        header_raw.customContextMenuRequested.connect(
+            lambda p: ect_main_window.show_header_menu(point=p, table=self.table_raw))
         # table 2
         self.table_normalized = QtWidgets.QTableView()
         norm_table_model = NormalizedTableModel(pd.DataFrame(),
@@ -41,6 +42,10 @@ class Ui_EctMainWindow(object):
                                                               Normalization.Range.NONE_RANGE))
         self.table_normalized.setModel(norm_table_model)
         self.table_normalized.setObjectName("table_normalized")
+        header_norm = self.table_normalized.horizontalHeader()
+        header_norm.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        header_norm.customContextMenuRequested.connect(
+            lambda p: ect_main_window.show_header_menu(point=p, table=self.table_normalized))
         # tabRaw
         self.tab_raw = QtWidgets.QWidget()
         self.tab_raw.setObjectName("tab_raw")
@@ -63,15 +68,22 @@ class Ui_EctMainWindow(object):
         self.menubar = QtWidgets.QMenuBar(ect_main_window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
         self.menubar.setObjectName("menubar")
+        # File menu
         self.menu_file = QtWidgets.QMenu(self.menubar)
         self.menu_file.setObjectName("menu_file")
+        # View menu
         self.menu_view = QtWidgets.QMenu(self.menubar)
         self.menu_view.setObjectName("menu_view")
+        # Setting menu
         self.menu_settings = QtWidgets.QMenu(self.menubar)
         self.menu_settings.setObjectName("menu_settings")
+        # Layout menu
         self.menu_layout = QtWidgets.QMenu(self.menu_view)
         self.menu_layout.setObjectName("menu_layout")
         self.menu_view.addMenu(self.menu_layout)
+        # Clustering menu
+        self.menu_run = QtWidgets.QMenu(self.menu_view)
+        self.menu_run.setObjectName("menu_clustering")
 
         ect_main_window.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(ect_main_window)
@@ -97,6 +109,12 @@ class Ui_EctMainWindow(object):
         self.action_normalize.setObjectName("action_normalize")
         self.action_normalize.triggered.connect(ect_main_window.action_normalize_settings)
         self.menu_settings.addAction(self.action_normalize)
+        # A-Ward clustering action
+        self.action_clustering = QtWidgets.QAction(ect_main_window)
+        self.action_clustering.setObjectName("action_clustering")
+        self.action_clustering.triggered.connect(ect_main_window.action_clustering)
+        self.menu_run.addAction(self.action_clustering)
+
         # exit action
         self.action_exit = QtWidgets.QAction(ect_main_window)
         self.action_exit.setObjectName("action_exit")
@@ -106,6 +124,8 @@ class Ui_EctMainWindow(object):
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_view.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
+        self.menubar.addAction(self.menu_run.menuAction())
+
         self.retranslateUi(ect_main_window)
         QtCore.QMetaObject.connectSlotsByName(ect_main_window)
 
@@ -116,11 +136,13 @@ class Ui_EctMainWindow(object):
         self.menu_view.setTitle(_translate("ect_main_window", "View"))
         self.menu_settings.setTitle(_translate("ect_main_window", "Settings"))
         self.menu_layout.setTitle(_translate("ect_main_window", "Layout"))
+        self.menu_run.setTitle(_translate("ect_main_window", "Run"))
         self.action_open.setText(_translate("ect_main_window", "Open"))
         self.action_normalize.setText(_translate("ect_main_window", "Normalization ..."))
         self.action_exit.setText(_translate("ect_main_window", "Exit"))
         self.action_panel_layout.setText(_translate("ect_main_window", "Panel Layout"))
         self.action_tab_layout.setText(_translate("ect_main_window", "Tab Layout"))
+        self.action_clustering.setText(_translate("ect_main_window", "Clustering"))
 
     def translate(self, arg):
         _translate = QtCore.QCoreApplication.translate
