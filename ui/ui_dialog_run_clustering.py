@@ -22,7 +22,7 @@ class RunClusteringDialog(QtWidgets.QDialog):
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox = QtWidgets.QGroupBox(self)
-        self.groupBox.setMaximumSize(QtCore.QSize(16777215, 200))
+        self.groupBox.setMaximumSize(QtCore.QSize(16777215, 300))
         self.groupBox.setStyleSheet("")
         self.groupBox.setFlat(False)
         self.groupBox.setCheckable(False)

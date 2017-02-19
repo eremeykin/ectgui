@@ -109,11 +109,17 @@ class Ui_EctMainWindow(object):
         self.action_normalize.setObjectName("action_normalize")
         self.action_normalize.triggered.connect(ect_main_window.action_normalize_settings)
         self.menu_settings.addAction(self.action_normalize)
-        # A-Ward clustering action
+        # Run clustering action
         self.action_clustering = QtWidgets.QAction(ect_main_window)
         self.action_clustering.setObjectName("action_clustering")
         self.action_clustering.triggered.connect(ect_main_window.action_clustering)
         self.menu_run.addAction(self.action_clustering)
+
+        # Run A-ward clustering
+        self.action_a_ward = QtWidgets.QAction(ect_main_window)
+        self.action_a_ward.setObjectName("action_a_ward")
+        self.action_a_ward.triggered.connect(ect_main_window.action_a_ward)
+        self.menu_run.addAction(self.action_a_ward)
 
         # exit action
         self.action_exit = QtWidgets.QAction(ect_main_window)
@@ -143,6 +149,7 @@ class Ui_EctMainWindow(object):
         self.action_panel_layout.setText(_translate("ect_main_window", "Panel Layout"))
         self.action_tab_layout.setText(_translate("ect_main_window", "Tab Layout"))
         self.action_clustering.setText(_translate("ect_main_window", "Clustering"))
+        self.action_a_ward.setText(_translate("ect_main_window", "A Ward"))
 
     def translate(self, arg):
         _translate = QtCore.QCoreApplication.translate

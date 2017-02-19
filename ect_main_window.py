@@ -81,11 +81,15 @@ class EctMainWindow(QtWidgets.QMainWindow):
             action_del.triggered.connect(lambda x: self.action_delete(column))
             action_del.setText(self.ui.translate("Delete"))
             menu.addAction(action_del)
+            if column + 1 == table.model().columnCount():
+                action_del.setDisabled(True)
 
         action_hist = QtWidgets.QAction(self)
         action_hist.setObjectName("actionHistogram")
         action_hist.triggered.connect(lambda x: self.action_hist(table, column))
         action_hist.setText(self.ui.translate("Histogram"))
+        if column + 1 == table.model().columnCount():
+            action_hist.setDisabled(True)
         menu.addAction(action_hist)
         menu.popup(table.horizontalHeader().mapToGlobal(point))
 
@@ -163,6 +167,22 @@ class EctMainWindow(QtWidgets.QMainWindow):
         data['Cluster#'] = labels
         model = NormalizedTableModel(data, self.settings.normalization)
         self.ui.table_normalized.setModel(model)
+
+    def action_a_ward(self):
+        print(self.ui.table_normalized.model().get_data())
+        from eclustering.pattern_init import a_pattern_init
+        from eclustering.a_ward import a_ward
+        data = self.ui.table_normalized.model().get_data()
+        data_m = data.as_matrix()
+        labels, centroids = a_pattern_init(data_m)
+        labels = a_ward(data_m, K_star=4, labels=labels)
+        m = self.ui.table_normalized.model()
+        m.set_cluster(labels)
+        self.ui.table_normalized.setModel(m)
+        # return
+        # data['Cluster#'] = labels
+        # model = NormalizedTableModel(data, self.settings.normalization)
+        # self.ui.table_normalized.setModel(model)
 
     def action_exit(self):
         sys.exit()

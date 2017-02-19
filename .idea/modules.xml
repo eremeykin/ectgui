@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../effective-clustering/.idea/CW.iml" filepath="$PROJECT_DIR$/../effective-clustering/.idea/CW.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ect.iml" filepath="$PROJECT_DIR$/.idea/ect.iml" />
       <module fileurl="file://$USER_HOME$/gui/.idea/gui.iml" filepath="$USER_HOME$/gui/.idea/gui.iml" />
     </modules>
   </component>
