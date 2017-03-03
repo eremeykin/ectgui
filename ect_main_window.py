@@ -11,8 +11,12 @@ from PyQt5 import QtCore, QtWidgets
 
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
+from ui.PlotInfo import PlotInfo
 from ui.ui_dialog_normalization import NormalizationDialog
 from ui.ui_ect_main_window import Ui_EctMainWindow
+import matplotlib.pyplot as plt
+import numpy as np
+from itertools import cycle
 
 
 class EctMainWindow(QtWidgets.QMainWindow):
@@ -21,6 +25,7 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.settings = Settings()
         self.ui = Ui_EctMainWindow()
         self.ui.setupUi(self)
+        self.plot_info = PlotInfo([self.ui.table_normalized.model(), self.ui.table_raw.model()])
 
     def action_normalize_settings(self):
         result = NormalizationDialog.open(self)
@@ -88,19 +93,71 @@ class EctMainWindow(QtWidgets.QMainWindow):
         action_hist.setObjectName("actionHistogram")
         action_hist.triggered.connect(lambda x: self.action_hist(table, column))
         action_hist.setText(self.ui.translate("Histogram"))
+
+        menu.addAction(action_hist)
+
+        marker = 'X'
+        action_set_as = QtWidgets.QAction(self)
+        action_set_as.setObjectName("actionSetAs" + marker)
+        action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='X'))
+        action_set_as.setText(self.ui.translate("Set as " + marker))
+        menu.addAction(action_set_as)
+        marker = 'Y'
+        action_set_as = QtWidgets.QAction(self)
+        action_set_as.setObjectName("actionSetAs" + marker)
+        action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='Y'))
+        action_set_as.setText(self.ui.translate("Set as " + marker))
+        menu.addAction(action_set_as)
+        marker = 'C'
+        action_set_as = QtWidgets.QAction(self)
+        action_set_as.setObjectName("actionSetAs" + marker)
+        action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='C'))
+        action_set_as.setText(self.ui.translate("Set as " + marker))
+        menu.addAction(action_set_as)
+
         if column + 1 == table.model().columnCount():
             action_hist.setDisabled(True)
-        menu.addAction(action_hist)
         menu.popup(table.horizontalHeader().mapToGlobal(point))
 
-    def action_hist(self, table, column):
-        import numpy as np
-        import matplotlib.mlab as mlab
-        import matplotlib.pyplot as plt
+    def action_set_as(self, table, column, marker):
+        self.plot_info.set(table, column, marker)
 
+    def delete_markers(self):
+        self.plot_info.delete_markers()
+
+    def plot_by_markers(self):
+        clist = ['b', 'g', 'r', 'c', 'm', 'y', 'k', ]
+        colors = cycle(clist)
+        markers = cycle(['o', 'p', '.', 's', '8', 'h'])
+        size = cycle([75, 150, 125, 100])
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        plt.axis('equal')
+        # plt.gca().set_aspect('equal', adjustable='box')
+
+        cdata = self.plot_info.get('C')
+        if cdata is not None:
+            for l in np.unique(cdata):
+                s = next(size)
+                m = next(markers)
+                c = next(colors)
+                plt.scatter(self.plot_info.get('X')[cdata == l], self.plot_info.get('Y')[cdata == l], s=s, marker=m,
+                            color=c)
+        else:
+            plt.scatter(self.plot_info.get('X'), self.plot_info.get('Y'), s=150, marker='o', color='b')
+        # show_num = True
+        # if show_num:
+        #     for i, j in data:
+        #         label = labels[ind]
+        #         ind += 1
+        #         ax.annotate(str(label), xy=(i, j), xytext=(4, 3), textcoords='offset points')
+        plt.grid(True)
+        plt.show()
+
+    def action_hist(self, table, column):
         x = table.model().get_data()
         x = x[x.columns[column]]
-        print(x)
         n, bins, patches = plt.hist(x, 50, normed=0, facecolor='green', alpha=0.95)
 
         plt.xlabel('Values')
@@ -169,7 +226,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.ui.table_normalized.setModel(model)
 
     def action_a_ward(self):
-        print(self.ui.table_normalized.model().get_data())
         from eclustering.pattern_init import a_pattern_init
         from eclustering.a_ward import a_ward
         data = self.ui.table_normalized.model().get_data()

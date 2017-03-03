@@ -84,6 +84,9 @@ class Ui_EctMainWindow(object):
         # Clustering menu
         self.menu_run = QtWidgets.QMenu(self.menu_view)
         self.menu_run.setObjectName("menu_clustering")
+        # Plot menu
+        self.menu_plot = QtWidgets.QMenu(self.menubar)
+        self.menu_plot.setObjectName("menu_plot")
 
         ect_main_window.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(ect_main_window)
@@ -114,23 +117,32 @@ class Ui_EctMainWindow(object):
         self.action_clustering.setObjectName("action_clustering")
         self.action_clustering.triggered.connect(ect_main_window.action_clustering)
         self.menu_run.addAction(self.action_clustering)
-
         # Run A-ward clustering
         self.action_a_ward = QtWidgets.QAction(ect_main_window)
         self.action_a_ward.setObjectName("action_a_ward")
         self.action_a_ward.triggered.connect(ect_main_window.action_a_ward)
         self.menu_run.addAction(self.action_a_ward)
-
         # exit action
         self.action_exit = QtWidgets.QAction(ect_main_window)
         self.action_exit.setObjectName("action_exit")
         self.action_exit.triggered.connect(ect_main_window.action_exit)
         self.menu_file.addAction(self.action_exit)
+        # by_markers action
+        self.action_by_markers = QtWidgets.QAction(ect_main_window)
+        self.action_by_markers.setObjectName("action_by_markers")
+        self.action_by_markers.triggered.connect(ect_main_window.plot_by_markers)
+        self.menu_plot.addAction(self.action_by_markers)
+        # delete markers
+        self.action_delete_markers = QtWidgets.QAction(ect_main_window)
+        self.action_delete_markers.setObjectName("action_delete_markers")
+        self.action_delete_markers.triggered.connect(ect_main_window.delete_markers)
+        self.menu_plot.addAction(self.action_delete_markers)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_view.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
         self.menubar.addAction(self.menu_run.menuAction())
+        self.menubar.addAction(self.menu_plot.menuAction())
 
         self.retranslateUi(ect_main_window)
         QtCore.QMetaObject.connectSlotsByName(ect_main_window)
@@ -143,6 +155,7 @@ class Ui_EctMainWindow(object):
         self.menu_settings.setTitle(_translate("ect_main_window", "Settings"))
         self.menu_layout.setTitle(_translate("ect_main_window", "Layout"))
         self.menu_run.setTitle(_translate("ect_main_window", "Run"))
+        self.menu_plot.setTitle(_translate("ect_main_window", "Plot"))
         self.action_open.setText(_translate("ect_main_window", "Open"))
         self.action_normalize.setText(_translate("ect_main_window", "Normalization ..."))
         self.action_exit.setText(_translate("ect_main_window", "Exit"))
@@ -150,6 +163,9 @@ class Ui_EctMainWindow(object):
         self.action_tab_layout.setText(_translate("ect_main_window", "Tab Layout"))
         self.action_clustering.setText(_translate("ect_main_window", "Clustering"))
         self.action_a_ward.setText(_translate("ect_main_window", "A Ward"))
+        self.action_by_markers.setText(_translate("ect_main_window", "Plot Data by Markers"))
+        self.action_delete_markers.setText(_translate("ect_main_window", "Delete All Markers"))
+
 
     def translate(self, arg):
         _translate = QtCore.QCoreApplication.translate

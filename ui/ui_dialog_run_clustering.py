@@ -106,7 +106,6 @@ class RunClusteringDialog(QtWidgets.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def disable(self):
-        print('IN')
         self.tableView.setDisabled(not self.radioButton_3.isChecked())
 
     def setTableModel(self):
@@ -129,7 +128,7 @@ class RunClusteringDialog(QtWidgets.QDialog):
         self.radioButton_4.setText(_translate("Dialog", "p = 2"))
         self.radioButton_5.setText(_translate("Dialog", "p = "))
         self.radioButton_6.setText(_translate("Dialog", "Automatically calculated"))
-        self.groupBox_3.setTitle(_translate("Dialog", "Cluster count and initial centroids"))
+        self.groupBox_3.setTitle(_translate("Dialog", "Number of clusters and initial centroids"))
         self.radioButton_8.setText(_translate("Dialog", "Runtime defined"))
         self.radioButton_7.setText(_translate("Dialog", "Defined by anomalous clustering"))
         self.radioButton_9.setText(_translate("Dialog", "A posteriori defined"))

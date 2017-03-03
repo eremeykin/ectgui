@@ -9,8 +9,27 @@ class PandasTableModel(QtCore.QAbstractTableModel):
         super(PandasTableModel, self).__init__()
         self.datatable = data
         self.layout = 'Panel'  # TODO Delete?
+        self.markers = dict()
         if self.columnCount() == 0:
             self.datatable = pd.DataFrame()
+
+    def get_actual_data(self):
+        return self.datatable
+
+    def get_by_marker(self, marker):
+        return self.get_actual_data()[self.markers[marker]]
+
+    def set_marker(self, column_name, marker):
+        self.markers[marker] = column_name
+
+    def del_all_markers(self):
+        self.markers = dict()
+
+    def del_marker(self, marker):
+        try:
+            del self.markers[marker]
+        except KeyError:
+            pass
 
     def update(self, dataIn):
         self.datatable = dataIn
@@ -35,7 +54,12 @@ class PandasTableModel(QtCore.QAbstractTableModel):
 
     def headerData(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant(self.datatable.columns.values[col])
+            c_name = self.datatable.columns.values[col]
+            new_name = c_name
+            for marker in self.markers.keys():
+                if self.markers[marker] == col:
+                    new_name += " (" + marker + ")"
+            return QtCore.QVariant(new_name)
         if orientation == QtCore.Qt.Vertical and role == QtCore.Qt.DisplayRole:
             return QtCore.QVariant(str(self.datatable.index.values[col]))
         return QtCore.QVariant()
@@ -57,6 +81,9 @@ class NormalizedTableModel(PandasTableModel):
         else:
             self.cluster_column = pd.Series(labels, index=self.norm_data.index, name='CLUSTER #')
 
+    def get_actual_data(self):
+        return self.norm_data
+
     def update(self, dataIn):
         self.datatable = dataIn
         self.norm_data = self.norm.apply(self.datatable)
@@ -77,7 +104,6 @@ class NormalizedTableModel(PandasTableModel):
             return QtCore.QVariant()
 
     def headerData(self, col, orientation, role):
-        # print(super().columnCount())
         if col == super().columnCount() and orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self.cluster_column.name
         return super().headerData(col, orientation, role)
