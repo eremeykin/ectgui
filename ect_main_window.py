@@ -12,11 +12,13 @@ from PyQt5 import QtCore, QtWidgets
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
 from ui.PlotInfo import PlotInfo
+from ui.kovaleva_dialog import KovalevaGeneratorDialog
 from ui.ui_dialog_normalization import NormalizationDialog
 from ui.ui_ect_main_window import Ui_EctMainWindow
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import cycle
+from generators.kovaleva import kovaleva
 
 
 class EctMainWindow(QtWidgets.QMainWindow):
@@ -35,12 +37,31 @@ class EctMainWindow(QtWidgets.QMainWindow):
             m.set_norm(result)
             self.ui.table_normalized.setModel(m)
 
-    def action_open(self):
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '\home')[0]
-        data = pd.read_csv(fname)
+    def _load(self, name):
+        data = pd.read_csv(name)
         model = RawTableModel(data)
         self.ui.table_raw.setModel(model)
-        self.setWindowTitle(self.ui.translate(self.ui.app_name) + ": " + fname)
+        self.setWindowTitle(self.ui.translate(self.ui.app_name) + ": " + name)
+
+    def action_open(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '\home')[0]
+        if not fname:
+            return
+        self._load(fname)
+
+    def action_generate(self):
+        kgd = KovalevaGeneratorDialog.open(self)
+        if kgd:
+            data = kovaleva(*kgd)
+            data = np.column_stack(data)
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save new data as', 'gen_data.csv')[0]
+            print(data)
+            np.savetxt(fileName, data, delimiter=',', comments='',  header=','.join(['F'+str(i) for i in range(data.shape[1])]))
+            self._load(fileName)
+
+
+
+
 
     def action_normalize(self, column):
         df_raw = self.ui.table_raw.model().get_data()
@@ -212,6 +233,8 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.ui.grid_layout.addWidget(self.ui.splitter)
 
     def action_clustering(self):
+        # TODO implement later
+        # return
         from ui.ui_dialog_run_clustering import RunClusteringDialog
         dialog = RunClusteringDialog.open(self)
         return
@@ -226,6 +249,8 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.ui.table_normalized.setModel(model)
 
     def action_a_ward(self):
+        # TODO Delete later
+        return
         from eclustering.pattern_init import a_pattern_init
         from eclustering.a_ward import a_ward
         data = self.ui.table_normalized.model().get_data()

@@ -97,6 +97,11 @@ class Ui_EctMainWindow(object):
         self.action_open.setObjectName("action_open")
         self.action_open.triggered.connect(ect_main_window.action_open)
         self.menu_file.addAction(self.action_open)
+        # generate action
+        self.action_generate = QtWidgets.QAction(ect_main_window)
+        self.action_generate.setObjectName("action_generate")
+        self.action_generate.triggered.connect(ect_main_window.action_generate)
+        self.menu_file.addAction(self.action_generate)
         # tabLayout action
         self.action_tab_layout = QtWidgets.QAction(ect_main_window)
         self.action_tab_layout.setObjectName("action_tab_layout")
@@ -157,6 +162,7 @@ class Ui_EctMainWindow(object):
         self.menu_run.setTitle(_translate("ect_main_window", "Run"))
         self.menu_plot.setTitle(_translate("ect_main_window", "Plot"))
         self.action_open.setText(_translate("ect_main_window", "Open"))
+        self.action_generate.setText(_translate("ect_main_window", "Generate"))
         self.action_normalize.setText(_translate("ect_main_window", "Normalization ..."))
         self.action_exit.setText(_translate("ect_main_window", "Exit"))
         self.action_panel_layout.setText(_translate("ect_main_window", "Panel Layout"))

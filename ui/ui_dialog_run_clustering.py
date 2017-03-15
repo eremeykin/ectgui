@@ -141,3 +141,13 @@ class RunClusteringDialog(QtWidgets.QDialog):
             return True  # dialog.get_result()
         else:
             return False
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = RunClusteringDialog(None)
+    # ui.open()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())
