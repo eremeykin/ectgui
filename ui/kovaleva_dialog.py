@@ -82,14 +82,6 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         self.buttonBox.rejected.connect(self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label.setText(_translate("Dialog", "Minimal cluster cardinality"))
-        self.label_2.setText(_translate("Dialog", "Number of clusters"))
-        self.label_3.setText(_translate("Dialog", "Size"))
-        self.label_4.setText(_translate("Dialog", "a"))
-
     @staticmethod
     def open(parent=None):
         dialog = KovalevaGeneratorDialog(parent)

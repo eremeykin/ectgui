@@ -77,12 +77,14 @@ class NormalizedTableModel(PandasTableModel):
         self.norm = normalization
         self.norm_data = self.norm.apply(self.datatable)
         if labels is None:
-            self.cluster_column = pd.Series('?', index=self.norm_data.index, name='CLUSTER #')
+            self.cluster_column = pd.Series('?', index=self.norm_data.index, name='Cluster#')
         else:
-            self.cluster_column = pd.Series(labels, index=self.norm_data.index, name='CLUSTER #')
+            self.cluster_column = pd.Series(labels, index=self.norm_data.index, name='Cluster#')
 
     def get_actual_data(self):
-        return self.norm_data
+        nd = self.norm_data.copy()
+        nd['Cluster#'] =self.cluster_column
+        return nd
 
     def update(self, dataIn):
         self.datatable = dataIn
@@ -105,7 +107,11 @@ class NormalizedTableModel(PandasTableModel):
 
     def headerData(self, col, orientation, role):
         if col == super().columnCount() and orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-            return self.cluster_column.name
+            new_name = self.cluster_column.name
+            for marker in self.markers.keys():
+                if self.markers[marker] == col:
+                    new_name += " (" + marker + ")"
+            return new_name
         return super().headerData(col, orientation, role)
 
     def set_norm(self, normalization):

@@ -7,7 +7,17 @@
 #
 # WARNING! All changes made in this file will be lost!
 import pandas as pd
+import time
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
+from eclustering.agglomerative.a_ward import a_ward
+from eclustering.divisive.dePDDP import dePDDP
+from eclustering.divisive.BiKM_R import BiKM_R
+from eclustering.pattern_initialization.anomalous_cluster import anomalous_cluster
+
+from ui.rand_dir_dialog import RandDirDialog
+from ui.ui_dialog_run_clustering import RunClusteringDialog
 
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
@@ -55,13 +65,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
             data = kovaleva(*kgd)
             data = np.column_stack(data)
             fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save new data as', 'gen_data.csv')[0]
-            print(data)
-            np.savetxt(fileName, data, delimiter=',', comments='',  header=','.join(['F'+str(i) for i in range(data.shape[1])]))
+            np.savetxt(fileName, data, delimiter=',', comments='',
+                       header=','.join(['F' + str(i) for i in range(data.shape[1])]))
             self._load(fileName)
-
-
-
-
 
     def action_normalize(self, column):
         df_raw = self.ui.table_raw.model().get_data()
@@ -233,20 +239,63 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.ui.grid_layout.addWidget(self.ui.splitter)
 
     def action_clustering(self):
-        # TODO implement later
-        # return
-        from ui.ui_dialog_run_clustering import RunClusteringDialog
-        dialog = RunClusteringDialog.open(self)
-        return
-        from eclustering.pattern_init import a_pattern_init
-        from eclustering.a_ward import a_ward
         data = self.ui.table_normalized.model().get_data()
         data_m = data.as_matrix()
-        labels, centroids = a_pattern_init(data_m)
-        labels = a_ward(data_m, K_star=4, labels=labels)
-        data['Cluster#'] = labels
-        model = NormalizedTableModel(data, self.settings.normalization)
-        self.ui.table_normalized.setModel(model)
+        labels = None
+        dialog_res = RunClusteringDialog.open(self)
+        end = 0
+        start = 0
+        if not dialog_res:
+            return
+
+        print(data_m[:5])
+
+        if dialog_res.weights is not None:
+            data_m = data_m * dialog_res.weights.as_matrix()
+
+        print(data_m[:5])
+
+        if dialog_res.minimum_of_density:
+            res = RandDirDialog.open(self)
+            if res:
+                if not res[0]:
+                    start = time.time()
+                    labels = dePDDP(data_m)
+                    end = time.time()
+                else:
+                    start = time.time()
+                    labels = BiKM_R(data_m, res[1], res[2])
+                    end = time.time()
+        if dialog_res.n_clusters is not None:
+            if dialog_res.minkowski == 2 and not dialog_res.cluster_spec_weights:
+                start = time.time()
+                a_labels, centroids = anomalous_cluster(data_m)
+                labels = a_labels
+                # print(dialog_res.n_clusters)
+                # labels = a_ward(data, dialog_res.n_clusters, a_labels)
+                # print(np.unique(labels))
+                end = time.time()
+
+        if labels is not None:
+            infoBox = QMessageBox()
+            infoBox.setIcon(QMessageBox.Information)
+            infoBox.setText("Clustering completed")
+            infoBox.setInformativeText("Informative Text")
+            infoBox.setWindowTitle("Notification")
+            infoBox.setDetailedText("Time: " + str(end - start))
+            infoBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            infoBox.exec_()
+            model = NormalizedTableModel(data, self.settings.normalization, labels)
+            self.ui.table_normalized.setModel(model)
+        else:
+            infoBox = QMessageBox()
+            infoBox.setIcon(QMessageBox.Information)
+            infoBox.setText("Error")
+            infoBox.setInformativeText("An error occurred")
+            infoBox.setWindowTitle("An error occurred")
+            infoBox.setDetailedText("No detailed info")
+            infoBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            infoBox.exec_()
 
     def action_a_ward(self):
         # TODO Delete later
