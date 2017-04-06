@@ -278,7 +278,6 @@ class RunClusteringDialog(QtWidgets.QDialog):
         result = dialog.exec_()
         if result == QtWidgets.QDialog.Accepted:
             res = dialog.get_result()
-            print(res)
             return res
         else:
             return False

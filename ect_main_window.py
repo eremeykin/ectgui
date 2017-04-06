@@ -6,15 +6,22 @@
 # by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
+import traceback
+from threading import Thread
+
+from PyQt5 import QtGui
+
 import pandas as pd
 import time
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from builtins import print
 
 from eclustering.agglomerative.a_ward import a_ward
 from eclustering.divisive.dePDDP import dePDDP
 from eclustering.divisive.BiKM_R import BiKM_R
 from eclustering.pattern_initialization.anomalous_cluster import anomalous_cluster
+from ui.progress import ProgressDialog
 
 from ui.rand_dir_dialog import RandDirDialog
 from ui.ui_dialog_run_clustering import RunClusteringDialog
@@ -25,6 +32,9 @@ from ui.PlotInfo import PlotInfo
 from ui.kovaleva_dialog import KovalevaGeneratorDialog
 from ui.ui_dialog_normalization import NormalizationDialog
 from ui.ui_ect_main_window import Ui_EctMainWindow
+import matplotlib
+
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import cycle
@@ -38,6 +48,7 @@ class EctMainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_EctMainWindow()
         self.ui.setupUi(self)
         self.plot_info = PlotInfo([self.ui.table_normalized.model(), self.ui.table_raw.model()])
+        self.in_progress = False
 
     def action_normalize_settings(self):
         result = NormalizationDialog.open(self)
@@ -48,16 +59,52 @@ class EctMainWindow(QtWidgets.QMainWindow):
             self.ui.table_normalized.setModel(m)
 
     def _load(self, name):
-        data = pd.read_csv(name)
-        model = RawTableModel(data)
-        self.ui.table_raw.setModel(model)
-        self.setWindowTitle(self.ui.translate(self.ui.app_name) + ": " + name)
+        try:
+            data = pd.read_csv(name)
+            model = RawTableModel(data)
+            self.ui.table_raw.setModel(model)
+            self.setWindowTitle(self.ui.translate(self.ui.app_name) + ": " + name)
+        except pd.io.common.CParserError:
+            # infoBox = QMessageBox()
+            # infoBox.setIcon(QMessageBox.Information)
+            # infoBox.setText("Error")
+            # infoBox.setInformativeText("An error occurred while loading the file. \nPlease, check file format. ")
+            # infoBox.setWindowTitle("Opening error")
+            # infoBox.setDetailedText(str(traceback.format_exc()))
+            # infoBox.setStandardButtons(QMessageBox.Ok)
+            # infoBox.resize(500,100)
+            # infoBox.exec_()
+            # QMessageBox.setDetailedText("Test")
+            mb = QMessageBox.question(self, 'Error',
+                                 'An error occured while loading the file.\nPlease, check file format.',
+                                 QMessageBox.Ok)
+
+
+    class ProgressThread(Thread):
+        def __init__(self):
+            super(EctMainWindow.ProgressThread, self).__init__()
+            self.__stoped = False
+            self.dialog = ProgressDialog(None)
+            self.dialog.setupUi(None)
+
+        def stop(self):
+            self.__stoped = True
+
+        def run(self):
+            self.dialog.show()
+            while not self.__stoped:
+                pass
+            self.dialog.hide()
+
 
     def action_open(self):
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '\home')[0]
+        fname = QtWidgets.QFileDialog.getOpenFileName(self.ui, 'Open file', '\home')[0]
         if not fname:
             return
+        thread = EctMainWindow.ProgressThread()
+        thread.start()
         self._load(fname)
+        thread.stop()
 
     def action_generate(self):
         kgd = KovalevaGeneratorDialog.open(self)
@@ -99,7 +146,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
             return
         column = table.horizontalHeader().logicalIndexAt(point.x())
         table_model = table.model()
-        # show menu about the column
         menu = QtWidgets.QMenu(self)
         if isinstance(table_model, RawTableModel):
             action_norm = QtWidgets.QAction(self)
@@ -107,14 +153,14 @@ class EctMainWindow(QtWidgets.QMainWindow):
             action_norm.triggered.connect(lambda x: self.action_normalize(column))
             action_norm.setText(self.ui.translate("Normalize"))
             menu.addAction(action_norm)
-        if isinstance(table_model, NormalizedTableModel):
-            action_del = QtWidgets.QAction(self)
-            action_del.setObjectName("actionDelete")
-            action_del.triggered.connect(lambda x: self.action_delete(column))
-            action_del.setText(self.ui.translate("Delete"))
-            menu.addAction(action_del)
-            if column + 1 == table.model().columnCount():
-                action_del.setDisabled(True)
+
+        action_del = QtWidgets.QAction(self)
+        action_del.setObjectName("actionDelete")
+        action_del.triggered.connect(lambda x: self.action_delete(table,column))
+        action_del.setText(self.ui.translate("Delete"))
+        menu.addAction(action_del)
+        if column + 1 == table.model().columnCount():
+            action_del.setDisabled(True)
 
         action_hist = QtWidgets.QAction(self)
         action_hist.setObjectName("actionHistogram")
@@ -123,28 +169,49 @@ class EctMainWindow(QtWidgets.QMainWindow):
 
         menu.addAction(action_hist)
 
+        menu_set = QtWidgets.QMenu(menu)
+        menu_set.setTitle("Set")
+
         marker = 'X'
         action_set_as = QtWidgets.QAction(self)
         action_set_as.setObjectName("actionSetAs" + marker)
         action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='X'))
-        action_set_as.setText(self.ui.translate("Set as " + marker))
-        menu.addAction(action_set_as)
+        action_set_as.setText(self.ui.translate("as " + marker))
+        menu_set.addAction(action_set_as)
         marker = 'Y'
         action_set_as = QtWidgets.QAction(self)
         action_set_as.setObjectName("actionSetAs" + marker)
         action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='Y'))
-        action_set_as.setText(self.ui.translate("Set as " + marker))
-        menu.addAction(action_set_as)
+        action_set_as.setText(self.ui.translate("as " + marker))
+        menu_set.addAction(action_set_as)
         marker = 'C'
         action_set_as = QtWidgets.QAction(self)
         action_set_as.setObjectName("actionSetAs" + marker)
         action_set_as.triggered.connect(lambda x: self.action_set_as(table, column, marker='C'))
-        action_set_as.setText(self.ui.translate("Set as " + marker))
-        menu.addAction(action_set_as)
+        action_set_as.setText(self.ui.translate("as " + marker))
+        menu_set.addAction(action_set_as)
+
+        action_set_as_index = QtWidgets.QAction(self)
+        action_set_as_index.setObjectName("actionSetAsIndex")
+        action_set_as_index.triggered.connect(lambda x: self.action_set_as_index(column))
+        action_set_as_index.setText(self.ui.translate("as Index"))
+        menu_set.addAction(action_set_as_index)
+
+        menu.addMenu(menu_set)
 
         if column + 1 == table.model().columnCount():
             action_hist.setDisabled(True)
         menu.popup(table.horizontalHeader().mapToGlobal(point))
+
+    def action_set_as_index(self,column):
+        table = self.ui.table_raw
+        header = table.verticalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        model = table.model()
+        data =model.get_data()
+        new_index = data[data.columns[column]]
+        self.action_delete(table,column)
+        model.datatable.index = new_index
 
     def action_set_as(self, table, column, marker):
         self.plot_info.set(table, column, marker)
@@ -161,7 +228,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         plt.axis('equal')
-        # plt.gca().set_aspect('equal', adjustable='box')
 
         cdata = self.plot_info.get('C')
         if cdata is not None:
@@ -182,6 +248,58 @@ class EctMainWindow(QtWidgets.QMainWindow):
         plt.grid(True)
         plt.show()
 
+    def __action_plot_svd(self, data):
+        if data is None or len(data) == 0:
+            QMessageBox.question(self, 'Nothing to plot',
+                                 'There is no data to plot.',
+                                 QMessageBox.Ok)
+        U, mu, Vt = np.linalg.svd(data.as_matrix())
+        clist = ['b', 'g', 'r', 'c', 'm', 'y', 'k', ]
+        colors = cycle(clist)
+        markers = cycle(['o', 'p', '.', 's', '8', 'h'])
+        size = cycle([75, 150, 125, 100])
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        plt.axis('equal')
+
+        cdata = self.plot_info.get('C')
+        if cdata is None:
+            cdata = self.ui.table_normalized.model().cluster_column
+            if len(cdata) < 1: cdata = None
+        if cdata is not None:
+            for l in np.unique(cdata):
+                s = next(size)
+                m = next(markers)
+                c = next(colors)
+                plt.scatter(U[:, 0][cdata == l] * np.sqrt(mu[0]), U[:, 1][cdata == l] * np.sqrt(mu[1]), s=s, marker=m,
+                            color=c)
+        else:
+            plt.scatter(U[:, 0] * np.sqrt(mu[0]), U[:, 1] * np.sqrt(mu[1]), s=150, marker='o', color='b')
+        plt.grid(True)
+        plt.show()
+
+    def action_plot_svd_norm(self):
+        data = self.ui.table_normalized.model().get_actual_data()
+        del data[data.columns[-1]]
+        self.__action_plot_svd(data)
+
+    def action_plot_svd_raw(self):
+        data = self.ui.table_raw.model().get_data()
+        has_nominal = False
+        for c in data:
+            if not np.issubdtype(data[c].dtype, np.number):
+                has_nominal = True
+        if has_nominal:
+            reply = QMessageBox.question(self, 'Nominal Feature',
+                                         'There is a nominal feature(s).\n It will be ignored.',
+                                         QMessageBox.Cancel, QMessageBox.Ok)
+            if reply == QMessageBox.Ok:
+                data = data._get_numeric_data()
+            else:
+                return
+        self.__action_plot_svd(data)
+
     def action_hist(self, table, column):
         x = table.model().get_data()
         x = x[x.columns[column]]
@@ -198,11 +316,24 @@ class EctMainWindow(QtWidgets.QMainWindow):
         for i in reversed(range(self.ui.grid_layout.count())):
             self.ui.grid_layout.itemAt(i).widget().setParent(None)
 
-    def action_delete(self, column):
-        df = self.ui.table_normalized.model().get_data()
+    def action_delete(self, table, column):
+        model = table.model()
+        df = model.get_data()
         df.drop(df.columns[[column]], axis=1, inplace=True)
-        model = NormalizedTableModel(df, self.settings.normalization)
-        self.ui.table_normalized.setModel(model)
+        if isinstance(model, NormalizedTableModel):
+            model = NormalizedTableModel(df, self.settings.normalization)
+            table.setModel(model)
+        if isinstance(model, RawTableModel):
+            model = RawTableModel(df)
+            table.setModel(model)
+
+    def action_norm_all(self):
+        data = self.ui.table_raw.model().get_data()
+        for i in range(len(data) - 1):
+            try:
+                self.action_normalize(i)
+            except:
+                pass
 
     def action_tab_layout(self):
         # tabWidget
@@ -248,12 +379,10 @@ class EctMainWindow(QtWidgets.QMainWindow):
         if not dialog_res:
             return
 
-        print(data_m[:5])
 
         if dialog_res.weights is not None:
             data_m = data_m * dialog_res.weights.as_matrix()
 
-        print(data_m[:5])
 
         if dialog_res.minimum_of_density:
             res = RandDirDialog.open(self)
@@ -271,9 +400,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
                 start = time.time()
                 a_labels, centroids = anomalous_cluster(data_m)
                 labels = a_labels
-                # print(dialog_res.n_clusters)
-                # labels = a_ward(data, dialog_res.n_clusters, a_labels)
-                # print(np.unique(labels))
                 end = time.time()
 
         if labels is not None:
@@ -297,22 +423,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
             infoBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             infoBox.exec_()
 
-    def action_a_ward(self):
-        # TODO Delete later
-        return
-        from eclustering.pattern_init import a_pattern_init
-        from eclustering.a_ward import a_ward
-        data = self.ui.table_normalized.model().get_data()
-        data_m = data.as_matrix()
-        labels, centroids = a_pattern_init(data_m)
-        labels = a_ward(data_m, K_star=4, labels=labels)
-        m = self.ui.table_normalized.model()
-        m.set_cluster(labels)
-        self.ui.table_normalized.setModel(m)
-        # return
-        # data['Cluster#'] = labels
-        # model = NormalizedTableModel(data, self.settings.normalization)
-        # self.ui.table_normalized.setModel(model)
+    def action_clear_norm(self):
+        for column in reversed(range(len(self.ui.table_normalized.model().get_data().columns))):
+            self.action_delete(self.ui.table_normalized,column)
 
     def action_exit(self):
         sys.exit()

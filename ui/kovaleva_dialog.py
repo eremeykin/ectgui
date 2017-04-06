@@ -6,6 +6,7 @@
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
+import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QDoubleValidator
@@ -39,6 +40,15 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         self.verticalLayout.setObjectName("verticalLayout")
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
+        self.label_pic = QtWidgets.QLabel(self)
+        self.label_pic.setObjectName("label_pic")
+        pixmap = QtGui.QPixmap(os.getcwd() + "/ui/gen_scheme_mini.jpg")
+        # pixmap = pixmap.scaledToWidth(600)
+        self.label_pic.setPixmap(pixmap)
+        self.verticalLayout.addWidget(self.label_pic)
+        # print(os.getcwd() + "/ui/gen_scheme.png")
+
+
         self.label = QtWidgets.QLabel(self)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
@@ -81,6 +91,7 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
+        self.setFixedSize(800,800)
 
     @staticmethod
     def open(parent=None):
@@ -103,9 +114,9 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label.setText(_translate("Dialog", "Minimal cluster cardinality"))
         self.label_2.setText(_translate("Dialog", "Number of clusters"))
-        self.label_3.setText(_translate("Dialog", "Size"))
-        self.label_4.setText(_translate("Dialog", "a"))
-
+        self.label_3.setText(_translate("Dialog", "Entities x features"))
+        self.label_4.setText(_translate("Dialog", "a (box bounds)"))
+        # self.label_pic.setText("some random text")
 
 if __name__ == "__main__":
     import sys

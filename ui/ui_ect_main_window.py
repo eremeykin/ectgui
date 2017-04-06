@@ -14,7 +14,7 @@ from normalization import Normalization
 from table_models import RawTableModel, NormalizedTableModel
 
 
-class Ui_EctMainWindow(object):
+class Ui_EctMainWindow(QtWidgets.QWidget):
     app_name = "Effective Clustering Toolkit"
 
     def setupUi(self, ect_main_window):
@@ -82,26 +82,32 @@ class Ui_EctMainWindow(object):
         self.menu_layout.setObjectName("menu_layout")
         self.menu_view.addMenu(self.menu_layout)
         # Clustering menu
-        self.menu_run = QtWidgets.QMenu(self.menu_view)
+        self.menu_run = QtWidgets.QMenu(self.menubar)
         self.menu_run.setObjectName("menu_clustering")
         # Plot menu
         self.menu_plot = QtWidgets.QMenu(self.menubar)
         self.menu_plot.setObjectName("menu_plot")
 
-        ect_main_window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(ect_main_window)
-        self.statusbar.setObjectName("statusbar")
-        ect_main_window.setStatusBar(self.statusbar)
         # open action
         self.action_open = QtWidgets.QAction(ect_main_window)
         self.action_open.setObjectName("action_open")
         self.action_open.triggered.connect(ect_main_window.action_open)
         self.menu_file.addAction(self.action_open)
+
+        # Menu File->Data
+        self.menu_data = QtWidgets.QMenu(self.menu_file)
+        self.menu_data.setObjectName("menu_data")
+        self.menu_file.addMenu(self.menu_data)
+
+        ect_main_window.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(ect_main_window)
+        self.statusbar.setObjectName("statusbar")
+        ect_main_window.setStatusBar(self.statusbar)
         # generate action
         self.action_generate = QtWidgets.QAction(ect_main_window)
         self.action_generate.setObjectName("action_generate")
         self.action_generate.triggered.connect(ect_main_window.action_generate)
-        self.menu_file.addAction(self.action_generate)
+        self.menu_data.addAction(self.action_generate)
         # tabLayout action
         self.action_tab_layout = QtWidgets.QAction(ect_main_window)
         self.action_tab_layout.setObjectName("action_tab_layout")
@@ -123,10 +129,21 @@ class Ui_EctMainWindow(object):
         self.action_clustering.triggered.connect(ect_main_window.action_clustering)
         self.menu_run.addAction(self.action_clustering)
         # Run A-ward clustering
-        self.action_a_ward = QtWidgets.QAction(ect_main_window)
-        self.action_a_ward.setObjectName("action_a_ward")
-        self.action_a_ward.triggered.connect(ect_main_window.action_a_ward)
-        self.menu_run.addAction(self.action_a_ward)
+        # self.action_a_ward = QtWidgets.QAction(ect_main_window)
+        # self.action_a_ward.setObjectName("action_a_ward")
+        # self.action_a_ward.triggered.connect(ect_main_window.action_a_ward)
+        # self.menu_run.addAction(self.action_a_ward)
+
+        # action normalize all
+        self.action_norm_all = QtWidgets.QAction(ect_main_window)
+        self.action_norm_all.setObjectName("action_norm_all")
+        self.action_norm_all.triggered.connect(ect_main_window.action_norm_all)
+        self.menu_data.addAction(self.action_norm_all)
+        # action clear normalize
+        self.action_clear_norm = QtWidgets.QAction(ect_main_window)
+        self.action_clear_norm.setObjectName("action_clear_norm")
+        self.action_clear_norm.triggered.connect(ect_main_window.action_clear_norm)
+        self.menu_data.addAction(self.action_clear_norm)
         # exit action
         self.action_exit = QtWidgets.QAction(ect_main_window)
         self.action_exit.setObjectName("action_exit")
@@ -142,12 +159,26 @@ class Ui_EctMainWindow(object):
         self.action_delete_markers.setObjectName("action_delete_markers")
         self.action_delete_markers.triggered.connect(ect_main_window.delete_markers)
         self.menu_plot.addAction(self.action_delete_markers)
+        # menu plot->svd
+        self.menu_svd = QtWidgets.QMenu(self.menu_view)
+        self.menu_svd.setObjectName("menu_svd")
+        self.menu_plot.addMenu(self.menu_svd)
+        # normalized action
+        self.action_normalized = QtWidgets.QAction(ect_main_window)
+        self.action_normalized.setObjectName("action_normalized")
+        self.action_normalized.triggered.connect(ect_main_window.action_plot_svd_norm)
+        # raw data
+        self.action_raw = QtWidgets.QAction(ect_main_window)
+        self.action_raw.setObjectName("action_raw")
+        self.action_raw.triggered.connect(ect_main_window.action_plot_svd_raw)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_view.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
         self.menubar.addAction(self.menu_run.menuAction())
         self.menubar.addAction(self.menu_plot.menuAction())
+        self.menu_svd.addAction(self.action_normalized)
+        self.menu_svd.addAction(self.action_raw)
 
         self.retranslateUi(ect_main_window)
         QtCore.QMetaObject.connectSlotsByName(ect_main_window)
@@ -168,10 +199,15 @@ class Ui_EctMainWindow(object):
         self.action_panel_layout.setText(_translate("ect_main_window", "Panel Layout"))
         self.action_tab_layout.setText(_translate("ect_main_window", "Tab Layout"))
         self.action_clustering.setText(_translate("ect_main_window", "Clustering"))
-        self.action_a_ward.setText(_translate("ect_main_window", "A Ward"))
+        # self.action_a_ward.setText(_translate("ect_main_window", "A Ward"))
         self.action_by_markers.setText(_translate("ect_main_window", "Plot Data by Markers"))
         self.action_delete_markers.setText(_translate("ect_main_window", "Delete All Markers"))
-
+        self.action_normalized.setText(_translate("ect_main_window", "Normalaized"))
+        self.action_raw.setText(_translate("ect_main_window", "Raw"))
+        self.menu_svd.setTitle(_translate("ect_main_window", "SVD"))
+        self.action_norm_all.setText(_translate("ect_main_window", "Normalize All"))
+        self.menu_data.setTitle(_translate("ect_main_window", "Data"))
+        self.action_clear_norm.setText(_translate("ect_main_window", "Clear Normalized"))
 
     def translate(self, arg):
         _translate = QtCore.QCoreApplication.translate
