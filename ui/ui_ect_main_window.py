@@ -92,6 +92,9 @@ class Ui_EctMainWindow(QtWidgets.QWidget):
         # Plot menu
         self.menu_plot = QtWidgets.QMenu(self.menubar)
         self.menu_plot.setObjectName("menu_plot")
+        # Report menu
+        self.menu_report = QtWidgets.QMenu(self.menubar)
+        self.menu_report.setObjectName("menu_report")
 
         # open action
         self.action_open = QtWidgets.QAction(ect_main_window)
@@ -176,12 +179,18 @@ class Ui_EctMainWindow(QtWidgets.QWidget):
         self.action_raw = QtWidgets.QAction(ect_main_window)
         self.action_raw.setObjectName("action_raw")
         self.action_raw.triggered.connect(ect_main_window.action_plot_svd_raw)
+        # report action
+        self.action_report = QtWidgets.QAction(ect_main_window)
+        self.action_report.setObjectName("action_report")
+        self.action_report.triggered.connect(ect_main_window.action_report)
+        self.menu_report.addAction(self.action_report)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_view.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
         self.menubar.addAction(self.menu_run.menuAction())
         self.menubar.addAction(self.menu_plot.menuAction())
+        self.menubar.addAction(self.menu_report.menuAction())
         self.menu_svd.addAction(self.action_normalized)
         self.menu_svd.addAction(self.action_raw)
 
@@ -197,6 +206,8 @@ class Ui_EctMainWindow(QtWidgets.QWidget):
         self.menu_layout.setTitle(_translate("ect_main_window", "Layout"))
         self.menu_run.setTitle(_translate("ect_main_window", "Run"))
         self.menu_plot.setTitle(_translate("ect_main_window", "Plot"))
+        self.menu_data.setTitle(_translate("ect_main_window", "Data"))
+        self.menu_report.setTitle(_translate("ect_main_window", "Report"))
         self.action_open.setText(_translate("ect_main_window", "Open"))
         self.action_generate.setText(_translate("ect_main_window", "Generate"))
         self.action_normalize.setText(_translate("ect_main_window", "Normalization ..."))
@@ -211,8 +222,8 @@ class Ui_EctMainWindow(QtWidgets.QWidget):
         self.action_raw.setText(_translate("ect_main_window", "Raw"))
         self.menu_svd.setTitle(_translate("ect_main_window", "SVD"))
         self.action_norm_all.setText(_translate("ect_main_window", "Normalize All"))
-        self.menu_data.setTitle(_translate("ect_main_window", "Data"))
         self.action_clear_norm.setText(_translate("ect_main_window", "Clear Normalized"))
+        self.action_report.setText(_translate("ect_main_window", "Show ..."))
 
     def translate(self, arg):
         _translate = QtCore.QCoreApplication.translate

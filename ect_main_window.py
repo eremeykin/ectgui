@@ -28,6 +28,7 @@ from ui.kovaleva_dialog import KovalevaGeneratorDialog
 from ui.progress import ProgressDialog
 from ui.rand_dir_dialog import RandDirDialog
 from ui.ui_dialog_normalization import NormalizationDialog
+from ui.ui_dialog_report import UiDialogReport
 from ui.ui_dialog_run_clustering import RunClusteringDialog
 from ui.ui_ect_main_window import Ui_EctMainWindow
 
@@ -203,6 +204,12 @@ class EctMainWindow(QtWidgets.QMainWindow):
         if column + 1 == table.model().columnCount():
             action_hist.setDisabled(True)
         menu.popup(table.horizontalHeader().mapToGlobal(point))
+
+    def action_report(self):
+        print('report')
+        ui = UiDialogReport(self, str(Report.get_report()))
+        ui.open()
+        ui.show()
 
     def action_set_as_index(self, column):
         table = self.ui.table_raw
@@ -432,7 +439,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
             infoBox.setText("Clustering completed")
             infoBox.setInformativeText("Informative Text")
             infoBox.setWindowTitle("Notification")
-            infoBox.setDetailedText("Time: " + str(end - start))
+            detailed_text = "Time: " + str(end - start) + "\n"
+            detailed_text += "Algorithm: " + report.alg
+            infoBox.setDetailedText(detailed_text)
             infoBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             infoBox.exec_()
             model = NormalizedTableModel(data, self.settings.normalization, labels)

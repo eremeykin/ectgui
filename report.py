@@ -4,11 +4,11 @@ import numpy as np
 def interpretattion(norm_data, data, labels, centroids, norm):
     norm_data_matrix = norm_data.as_matrix()
     D = np.sum(norm_data_matrix * norm_data_matrix)  # data scatter
-    me = np.mean(data[norm_data.columns].as_matrix(), axis = 0)
+    me = np.mean(data[norm_data.columns].as_matrix(), axis=0)
     # range = np.max(data, 0) - np.min(data, 0)
     scac = 0  # proportion of data scatter taken into account by the "first" clusters
     mem = labels  # membership
-    rc = norm.apply_reverse(data,norm_data, centroids)  # centers real scale
+    rc = norm.apply_reverse(data, norm_data, centroids)  # centers real scale
     sc = centroids  # centers standardised
     ak = np.max(mem)
     result = dict()
@@ -21,7 +21,7 @@ def interpretattion(norm_data, data, labels, centroids, norm):
         on = (centr_real - me) / me
         ovn = np.round(100 * on)  # same, percent
         # -----------getting cluster's contribution
-        clcon = np.dot(centr_norm,centr_norm)
+        clcon = np.dot(centr_norm, centr_norm)
         sccl = np.sum(clcon)
         scatcl = sccl * len(cluster) / D  # relative contribution of the cluster
         scac = scac + scatcl
@@ -80,7 +80,7 @@ class Report:
         rprt.append('Intelligent K-Means resulted in ' + str(len(self.u_labels)) + ' clusters;')
         rprt.append('Algorithm used: ' + self.alg if self.alg is not None else 'N/A')
         if self.norm:
-            rprt.append('Normalization:\n\t' + str(self.norm))
+            rprt.append('Normalization:\n\t' + str(self.norm.center_str()) + "\n\t" + str(self.norm.range_str()))
         else:
             rprt.append('Normalization: N/A')
         rprt.append('Anomalous pattern cardinality to discard: ' + str(self.apc if self.apc is not None else 'N/A'))
@@ -98,7 +98,17 @@ class Report:
             rprt.append('\tcentroid (real): ' + str(interp[l]['centr_real']))
             rprt.append('\tcentroid (norm): ' + str(interp[l]['centr_norm']))
             rprt.append('\tcentroid (% over/under grand mean): ' + str(interp[l]['ovn']))
-            rprt.append('\tcontribution (proper and cumulative): {:10.2}'.format(interp[l]['scatcl']) + ',{:10.2}'.format(interp[l]['scac']))
+            rprt.append(
+                '\tcontribution (proper and cumulative): {:10.2}'.format(interp[l]['scatcl']) + ',{:10.2}'.format(
+                    interp[l]['scac']))
+            nado, nido = "", ""
+            for f, f_name in enumerate(self.norm_data.columns):
+                if interp[l]['ovn'][f] > 30:
+                    nado += f_name
+                if -interp[l]['ovn'][f] > 30:
+                    nido += f_name
+            rprt.append('\tfeatures significantly larger than average: ' + ("None" if nado == "" else nado))
+            rprt.append('\tfeatures significantly smaller than average: ' + ("None" if nido == "" else nido))
         return '\n'.join(rprt)
 
     @staticmethod

@@ -114,11 +114,16 @@ class Normalization(object):
     def __bool__(self):
         return True
 
-    def __str__(self):
+    def center_str(self):
         if not self.enabled:
-            return 'disabled'
-        res = 'center: ' + str(self.center_type[1]) + \
-              ' range: ' + str(self.range_type[1])
+            return 'normalization disabled'
+        return 'center: ' + str(self.center_type[1])
+
+    def range_str(self):
+        if not self.enabled:
+            return 'normalization disabled'
+        res = 'range: ' + str(self.range_type[1])
         if self.center_type == Normalization.Center.MINKOWSKI_CENTER:
             res += ' minkowski power: ' + str(self.p)
         return res
+
