@@ -118,6 +118,10 @@ class NormalizedTableModel(PandasTableModel):
         self.norm = normalization
         self.update(self.datatable)
 
+    def get_norm(self):
+        return self.norm
+
+
     def get_data(self):
         return self.norm_data
 

@@ -1,7 +1,8 @@
 __author__ = 'eremeykin'
-import pandas as pd
-import numpy as np
 from collections import namedtuple
+
+import numpy as np
+import pandas as pd
 from scipy.optimize import fmin_tnc
 
 
@@ -41,6 +42,8 @@ class Normalization(object):
         self.p = p
         if self.center_type == Normalization.Center.MINKOWSKI_CENTER and self.p is None:
             raise Exception('p (power) is required for minkowski center calculation')
+        self.rng = None
+        self.center = None
 
     def apply(self, data):
         if not self.enabled:
@@ -52,7 +55,26 @@ class Normalization(object):
 
         raise Exception('Wrong data type for normalization')
 
-    def _apply(self, series):
+    def apply_reverse(self, real_data,norm_data, centroids):
+        if isinstance(real_data, pd.Series):
+            return self._apply_reverse(self.data, centroids[0])
+        if isinstance(real_data, pd.DataFrame):
+            res = np.empty((centroids.shape[0], 0))
+            for c,column in enumerate(norm_data):
+                series = real_data[column]
+                reversed = self._apply_reverse(series, centroids[:,c])
+                res = np.hstack((res, reversed.reshape(centroids.shape[0], 1)))
+            return res
+        raise Exception('Wrong data type for denormalization')
+
+    def _apply_reverse(self, series, c):
+        c = c.reshape((c.shape[0],1))
+        center = self._get_center(series)
+        rng = self._get_rng(series)
+        result = c * rng + center
+        return result
+
+    def _get_center(self, series):
         if self.center_type == Normalization.Center.NONE_CENTER:
             center = 0
         elif self.center_type == Normalization.Center.MINIMUM:
@@ -68,6 +90,9 @@ class Normalization(object):
             center = fmin_tnc(func=lambda x: D(series, x), x0=np.mean(series), approx_grad=True)[0]
         else:
             raise Exception('Unknown center type')
+        return center
+
+    def _get_rng(self, series):
         if self.range_type == Normalization.Range.NONE_RANGE:
             rng = 1
         elif self.range_type == Normalization.Range.SEMI_RANGE:
@@ -78,8 +103,22 @@ class Normalization(object):
             rng = ((series - series.median()).abs()).mean()
         else:
             raise Exception('Unknown range type')
+        return rng
+
+    def _apply(self, series):
+        center = self._get_center(series)
+        rng = self._get_rng(series)
         result = (series - center) / rng
         return result
 
     def __bool__(self):
         return True
+
+    def __str__(self):
+        if not self.enabled:
+            return 'disabled'
+        res = 'center: ' + str(self.center_type[1]) + \
+              ' range: ' + str(self.range_type[1])
+        if self.center_type == Normalization.Center.MINKOWSKI_CENTER:
+            res += ' minkowski power: ' + str(self.p)
+        return res

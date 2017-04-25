@@ -6,33 +6,30 @@
 # by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
-import traceback
+import time
 from threading import Thread
 
-from PyQt5 import QtGui
-
+import matplotlib
 import pandas as pd
-import time
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
-from builtins import print
 
 from eclustering.agglomerative.a_ward import a_ward
-from eclustering.divisive.dePDDP import dePDDP
+from eclustering.agglomerative.a_ward_p_beta import  a_ward_p_beta
 from eclustering.divisive.BiKM_R import BiKM_R
+from eclustering.divisive.dePDDP import dePDDP
 from eclustering.pattern_initialization.anomalous_cluster import anomalous_cluster
-from ui.progress import ProgressDialog
-
-from ui.rand_dir_dialog import RandDirDialog
-from ui.ui_dialog_run_clustering import RunClusteringDialog
-
+from eclustering.pattern_initialization.anomalous_cluster_p_beta import anomalous_cluster_p_beta
+from report import Report
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
 from ui.PlotInfo import PlotInfo
 from ui.kovaleva_dialog import KovalevaGeneratorDialog
+from ui.progress import ProgressDialog
+from ui.rand_dir_dialog import RandDirDialog
 from ui.ui_dialog_normalization import NormalizationDialog
+from ui.ui_dialog_run_clustering import RunClusteringDialog
 from ui.ui_ect_main_window import Ui_EctMainWindow
-import matplotlib
 
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
@@ -76,9 +73,8 @@ class EctMainWindow(QtWidgets.QMainWindow):
             # infoBox.exec_()
             # QMessageBox.setDetailedText("Test")
             mb = QMessageBox.question(self, 'Error',
-                                 'An error occured while loading the file.\nPlease, check file format.',
-                                 QMessageBox.Ok)
-
+                                      'An error occured while loading the file.\nPlease, check file format.',
+                                      QMessageBox.Ok)
 
     class ProgressThread(Thread):
         def __init__(self):
@@ -95,7 +91,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
             while not self.__stoped:
                 pass
             self.dialog.hide()
-
 
     def action_open(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self.ui, 'Open file', '\home')[0]
@@ -156,7 +151,7 @@ class EctMainWindow(QtWidgets.QMainWindow):
 
         action_del = QtWidgets.QAction(self)
         action_del.setObjectName("actionDelete")
-        action_del.triggered.connect(lambda x: self.action_delete(table,column))
+        action_del.triggered.connect(lambda x: self.action_delete(table, column))
         action_del.setText(self.ui.translate("Delete"))
         menu.addAction(action_del)
         if column + 1 == table.model().columnCount():
@@ -203,14 +198,14 @@ class EctMainWindow(QtWidgets.QMainWindow):
             action_hist.setDisabled(True)
         menu.popup(table.horizontalHeader().mapToGlobal(point))
 
-    def action_set_as_index(self,column):
+    def action_set_as_index(self, column):
         table = self.ui.table_raw
         header = table.verticalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         model = table.model()
-        data =model.get_data()
+        data = model.get_data()
         new_index = data[data.columns[column]]
-        self.action_delete(table,column)
+        self.action_delete(table, column)
         model.datatable.index = new_index
 
     def action_set_as(self, table, column, marker):
@@ -378,11 +373,13 @@ class EctMainWindow(QtWidgets.QMainWindow):
         start = 0
         if not dialog_res:
             return
-
+        report = Report.get_report()
+        report.set_norm_data(data)
+        report.set_data(self.ui.table_raw.model().get_data())
+        report.set_norm(self.ui.table_normalized.model().get_norm())
 
         if dialog_res.weights is not None:
             data_m = data_m * dialog_res.weights.as_matrix()
-
 
         if dialog_res.minimum_of_density:
             res = RandDirDialog.open(self)
@@ -391,18 +388,39 @@ class EctMainWindow(QtWidgets.QMainWindow):
                     start = time.time()
                     labels = dePDDP(data_m)
                     end = time.time()
+                    report.set_labels(labels)
+                    report.set_alg('dePDDP (Principal Direction Divisive Partitioning)')
                 else:
                     start = time.time()
                     labels = BiKM_R(data_m, res[1], res[2])
                     end = time.time()
+                    report.set_labels(labels)
+                    report.set_alg('BiKM-R (Bisecting K-Means divisive clustering)')
+
         if dialog_res.n_clusters is not None:
             if dialog_res.minkowski == 2 and not dialog_res.cluster_spec_weights:
                 start = time.time()
                 a_labels, centroids = anomalous_cluster(data_m)
-                labels = a_labels
+                labels = a_ward(data, dialog_res.n_clusters, labels=a_labels)
                 end = time.time()
+                report.set_labels(labels)
+                report.set_alg('anomalous clustering + A-Ward')
+            else:
+                start = time.time()
+                # a_labels, centroids = anomalous_cluster(data_m)
+                p = dialog_res.minkowski
+                beta = 2
+                a_labels, centroids, weights = anomalous_cluster_p_beta(data_m, p, beta)
+                labels = a_ward_p_beta(data, p, beta, dialog_res.n_clusters, a_labels, centroids, weights)
+                end = time.time()
+                report.set_labels(labels)
+                report.alg('anomalous clustering + A-ward p,beta')
 
         if labels is not None:
+            # try:
+            print(str(report))
+            # except:
+            #     print('Error')
             infoBox = QMessageBox()
             infoBox.setIcon(QMessageBox.Information)
             infoBox.setText("Clustering completed")
@@ -425,7 +443,7 @@ class EctMainWindow(QtWidgets.QMainWindow):
 
     def action_clear_norm(self):
         for column in reversed(range(len(self.ui.table_normalized.model().get_data().columns))):
-            self.action_delete(self.ui.table_normalized,column)
+            self.action_delete(self.ui.table_normalized, column)
 
     def action_exit(self):
         sys.exit()
