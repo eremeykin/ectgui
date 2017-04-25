@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a6735db7-2108-4827-b97b-a3a8df842ea1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/report.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/gesture_phase_dataset/a1_raw.csv" afterPath="$PROJECT_DIR$/data/gesture_phase_dataset/a1_raw.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/gesture_phase_dataset/a1_va3.csv" afterPath="$PROJECT_DIR$/data/gesture_phase_dataset/a1_va3.csv" />
@@ -20,8 +19,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/gesture_phase_dataset/c3_va3.csv" afterPath="$PROJECT_DIR$/data/gesture_phase_dataset/c3_va3.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/gesture_phase_dataset/data_description.txt" afterPath="$PROJECT_DIR$/data/gesture_phase_dataset/data_description.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ect_main_window.py" afterPath="$PROJECT_DIR$/ect_main_window.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/normalization.py" afterPath="$PROJECT_DIR$/normalization.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/table_models.py" afterPath="$PROJECT_DIR$/table_models.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/ui_ect_main_window.py" afterPath="$PROJECT_DIR$/ui/ui_ect_main_window.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py" afterPath="$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,65 +37,12 @@
     <favorites_list name="gui" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="report.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/report.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="98" column="41" lean-forward="false" selection-start-line="98" selection-start-column="41" selection-end-line="98" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ui_dialog_run_clustering.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/ui_dialog_run_clustering.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="464">
-              <caret line="251" column="15" lean-forward="false" selection-start-line="251" selection-start-column="15" selection-end-line="251" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_ward.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/agglomerative/a_ward.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="30" column="37" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="normalization.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/normalization.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-203">
-              <caret line="71" column="20" lean-forward="false" selection-start-line="71" selection-start-column="20" selection-end-line="71" selection-end-column="20" />
-              <folding>
-                <element signature="e#25#59#0" expanded="true" />
-                <element signature="e#3319#3366#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shape_base.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.4/dist-packages/numpy/core/shape_base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="233" column="0" lean-forward="false" selection-start-line="233" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ect_main_window.py" pinned="false" current-in-tab="false">
+    <leaf>
+      <file leaf-file-name="ect_main_window.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ect_main_window.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="414" column="21" lean-forward="false" selection-start-line="414" selection-start-column="17" selection-end-line="414" selection-end-column="21" />
+            <state relative-caret-position="204">
+              <caret line="143" column="0" lean-forward="true" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
               <folding>
                 <element signature="e#219#230#0" expanded="true" />
               </folding>
@@ -104,42 +50,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="anomalous_cluster_p_beta.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py">
+      <file leaf-file-name="ui_ect_main_window.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ui/ui_ect_main_window.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="674">
-              <caret line="59" column="4" lean-forward="false" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="a_ward_p_beta.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/agglomerative/a_ward_p_beta.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="109" column="36" lean-forward="true" selection-start-line="109" selection-start-column="36" selection-end-line="109" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="table_models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/table_models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3451">
-              <caret line="121" column="24" lean-forward="false" selection-start-line="121" selection-start-column="24" selection-end-line="121" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dePDDP.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/divisive/dePDDP.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="353">
+              <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+              <folding>
+                <element signature="e#219#238#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,7 +73,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>K_s</find>
       <find>Num</find>
       <find>radioButton_7</find>
       <find>Button_9</find>
@@ -185,6 +102,7 @@
       <find>as_m</find>
       <find>c=</find>
       <find>nd =</find>
+      <find>show_header_menu</find>
     </findStrings>
     <replaceStrings>
       <replace>self</replace>
@@ -231,12 +149,10 @@
         <option value="$PROJECT_DIR$/ui/rand_dir_dialog.py" />
         <option value="$PROJECT_DIR$/ui/PlotInfo.py" />
         <option value="$PROJECT_DIR$/../effective-clustering/generators/kovaleva.py" />
-        <option value="$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py" />
         <option value="$PROJECT_DIR$/ui/ui_dialog_run_clustering.py" />
         <option value="$PROJECT_DIR$/../effective-clustering/eclustering/agglomerative/a_ward.py" />
         <option value="$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster.py" />
         <option value="$PROJECT_DIR$/tests/open_test.py" />
-        <option value="$PROJECT_DIR$/ui/ui_ect_main_window.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/../effective-clustering/info.txt" />
         <option value="$PROJECT_DIR$/../effective-clustering/eclustering/interp.py" />
@@ -244,17 +160,19 @@
         <option value="$PROJECT_DIR$/ui/report.py" />
         <option value="$PROJECT_DIR$/interp.py" />
         <option value="$PROJECT_DIR$/table_models.py" />
-        <option value="$PROJECT_DIR$/ect_main_window.py" />
         <option value="$PROJECT_DIR$/normalization.py" />
         <option value="$PROJECT_DIR$/report.py" />
+        <option value="$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py" />
+        <option value="$PROJECT_DIR$/ui/ui_ect_main_window.py" />
+        <option value="$PROJECT_DIR$/ect_main_window.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="89" />
-    <option name="y" value="33" />
+    <option name="y" value="-6" />
     <option name="width" value="1831" />
-    <option name="height" value="1047" />
+    <option name="height" value="1086" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -272,7 +190,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -296,7 +213,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="eclustering" />
+              <option name="myItemId" value="generators" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -311,28 +228,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="eclustering" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pattern_initialization" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="effective-clustering" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="eclustering" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="agglomerative" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -346,18 +241,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ect" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
-  </component>
-  <component name="Push.Settings">
-    <excluded-roots>
-      <path value="$PROJECT_DIR$/../effective-clustering" />
-    </excluded-roots>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -603,10 +508,10 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.ect_main_window" />
-        <item index="1" class="java.lang.String" itemvalue="Python.report" />
-        <item index="2" class="java.lang.String" itemvalue="Python.normalization" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test" />
-        <item index="4" class="java.lang.String" itemvalue="Python.ui_ect_main_window" />
+        <item index="1" class="java.lang.String" itemvalue="Python.ui_ect_main_window" />
+        <item index="2" class="java.lang.String" itemvalue="Python.report" />
+        <item index="3" class="java.lang.String" itemvalue="Python.normalization" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -687,7 +592,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492883211560</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Report as string">
+      <created>1493113441983</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1493113441983</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -732,16 +644,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="89" y="33" width="1831" height="1047" extended-state="6" />
+    <frame x="89" y="-6" width="1831" height="1086" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20555556" sideWeight="0.49452055" order="0" side_tool="false" content_ui="combo" x="159" y="132" width="449" height="632" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.205" sideWeight="0.49452055" order="0" side_tool="false" content_ui="combo" x="159" y="132" width="449" height="632" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21314952" sideWeight="0.50666666" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26694915" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32944915" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30720338" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32873806" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26935312" sideWeight="0.49333334" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32944915" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24777777" sideWeight="0.50547945" order="2" side_tool="true" content_ui="tabs" />
@@ -765,7 +677,8 @@
     <MESSAGE value="Ready to inline clustering algorithms" />
     <MESSAGE value="Win installer (0.1)" />
     <MESSAGE value="Backup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Backup" />
+    <MESSAGE value="Report as string" />
+    <option name="LAST_COMMIT_MESSAGE" value="Report as string" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -784,20 +697,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-1247971765/PyQt5/QtCore/QAbstractItemModel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="301" column="8" lean-forward="false" selection-start-line="301" selection-start-column="8" selection-end-line="301" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/kovaleva_dialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="53">
-          <caret line="84" column="0" lean-forward="false" selection-start-line="84" selection-start-column="0" selection-end-line="98" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.4/dist-packages/pandas/core/indexing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
@@ -990,24 +889,15 @@
     <entry file="file://$PROJECT_DIR$/interp.py" />
     <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/divisive/dePDDP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
+        <state relative-caret-position="0">
           <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/table_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3451">
+        <state relative-caret-position="0">
           <caret line="121" column="24" lean-forward="false" selection-start-line="121" selection-start-column="24" selection-end-line="121" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/ui_ect_main_window.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="39" column="37" lean-forward="true" selection-start-line="39" selection-start-column="37" selection-end-line="39" selection-end-column="37" />
           <folding />
         </state>
       </provider>
@@ -1016,76 +906,94 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="87">
           <caret line="5" column="4" lean-forward="false" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/agglomerative/a_ward_p_beta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="109" column="36" lean-forward="true" selection-start-line="109" selection-start-column="36" selection-end-line="109" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="674">
-          <caret line="59" column="4" lean-forward="false" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="30" />
-          <folding />
+        <state relative-caret-position="8">
+          <caret line="109" column="36" lean-forward="false" selection-start-line="109" selection-start-column="36" selection-end-line="109" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/local/lib/python3.4/dist-packages/numpy/core/shape_base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
+        <state relative-caret-position="0">
           <caret line="233" column="0" lean-forward="false" selection-start-line="233" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/agglomerative/a_ward.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
+        <state relative-caret-position="0">
           <caret line="30" column="37" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/ui_dialog_run_clustering.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="464">
+        <state relative-caret-position="0">
           <caret line="251" column="15" lean-forward="false" selection-start-line="251" selection-start-column="15" selection-end-line="251" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/normalization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-203">
+        <state relative-caret-position="0">
           <caret line="71" column="20" lean-forward="false" selection-start-line="71" selection-start-column="20" selection-end-line="71" selection-end-column="20" />
           <folding>
-            <element signature="e#25#59#0" expanded="true" />
+            <element signature="e#25#59#0" expanded="false" />
             <element signature="e#3319#3366#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ect_main_window.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="414" column="21" lean-forward="false" selection-start-line="414" selection-start-column="17" selection-end-line="414" selection-end-column="21" />
-          <folding>
-            <element signature="e#219#230#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/report.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="98" column="41" lean-forward="false" selection-start-line="98" selection-start-column="41" selection-end-line="98" selection-end-column="41" />
+        <state relative-caret-position="1176">
+          <caret line="107" column="28" lean-forward="true" selection-start-line="107" selection-start-column="28" selection-end-line="107" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../effective-clustering/tests/test_ikmeans.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1462">
+          <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/pattern_initialization/anomalous_cluster_p_beta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-306">
+          <caret line="16" column="24" lean-forward="false" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../effective-clustering/eclustering/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="12" column="10" lean-forward="false" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/ui_ect_main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding>
+            <element signature="e#219#238#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ect_main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="143" column="0" lean-forward="true" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
+          <folding>
+            <element signature="e#219#230#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

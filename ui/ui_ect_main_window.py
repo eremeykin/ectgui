@@ -10,7 +10,6 @@ import pandas as pd
 from PyQt5 import QtCore, QtWidgets
 
 from normalization import Normalization
-
 from table_models import RawTableModel, NormalizedTableModel
 
 
@@ -46,7 +45,13 @@ class Ui_EctMainWindow(QtWidgets.QWidget):
         header_norm.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         header_norm.customContextMenuRequested.connect(
             lambda p: ect_main_window.show_header_menu(point=p, table=self.table_normalized))
-        # tabRaw
+
+        header_raw.sectionDoubleClicked.connect(
+            lambda point: ect_main_window.double_clicked_raw(point))
+
+        header_norm.sectionDoubleClicked.connect(
+            lambda point: ect_main_window.double_clicked_norm(point))
+
         self.tab_raw = QtWidgets.QWidget()
         self.tab_raw.setObjectName("tab_raw")
         self.grid_layout_raw = QtWidgets.QGridLayout(self.tab_raw)

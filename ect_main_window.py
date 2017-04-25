@@ -15,7 +15,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
 from eclustering.agglomerative.a_ward import a_ward
-from eclustering.agglomerative.a_ward_p_beta import  a_ward_p_beta
+from eclustering.agglomerative.a_ward_p_beta import a_ward_p_beta
 from eclustering.divisive.BiKM_R import BiKM_R
 from eclustering.divisive.dePDDP import dePDDP
 from eclustering.pattern_initialization.anomalous_cluster import anomalous_cluster
@@ -135,6 +135,12 @@ class EctMainWindow(QtWidgets.QMainWindow):
                     df[ds.name + str(uv)] = new_col
                 model = NormalizedTableModel(df, self.settings.normalization)
                 self.ui.table_normalized.setModel(model)
+
+    def double_clicked_raw(self, column):
+        self.action_normalize(column)
+
+    def double_clicked_norm(self, column):
+        self.action_delete(self.ui.table_normalized, column)
 
     def show_header_menu(self, point, table):
         if table is None:
