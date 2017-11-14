@@ -1,5 +1,8 @@
 import numpy as np
+<<<<<<< HEAD
 import pandas as pd
+=======
+>>>>>>> temp-branch
 
 
 def interpretattion(norm_data, data, labels, centroids, norm):
@@ -33,6 +36,7 @@ def interpretattion(norm_data, data, labels, centroids, norm):
     return result
 
 
+<<<<<<< HEAD
 class Cluster(object):
     def __init__(self, label, centroid, power):
         self.centroid = centroid
@@ -40,6 +44,8 @@ class Cluster(object):
         self.label = label
 
 
+=======
+>>>>>>> temp-branch
 class Report:
     report = None
 
@@ -52,7 +58,10 @@ class Report:
         self.centroids = None
         self.apc = None
         self.norm_data = None
+<<<<<<< HEAD
         self.clusters = dict()
+=======
+>>>>>>> temp-branch
 
     def set_alg(self, alg):
         self.alg = alg
@@ -61,6 +70,7 @@ class Report:
         self.norm_data = norm_data
 
     def set_data(self, data):
+<<<<<<< HEAD
         self.data = pd.DataFrame()
         for column in data:
             col_data = data[column]
@@ -77,11 +87,17 @@ class Report:
                     # if len(unique_values) == 2:
                     #     break
                     # self.data = data
+=======
+        self.data = data
+>>>>>>> temp-branch
 
     def set_labels(self, labels):
         self.labels = labels
         self.u_labels = np.unique(self.labels)
+<<<<<<< HEAD
         self.centroids = None
+=======
+>>>>>>> temp-branch
 
     def set_centroids(self, centroids):
         self.centroids = centroids
@@ -105,15 +121,20 @@ class Report:
         rprt.append('Intelligent K-Means resulted in ' + str(len(self.u_labels)) + ' clusters;')
         rprt.append('Algorithm used: ' + self.alg if self.alg is not None else 'N/A')
         if self.norm:
+<<<<<<< HEAD
             rprt.append('Normalization:\n\t')
             rprt.append("\t" + str(self.norm.center_str()))
             rprt.append("\t" + str(self.norm.range_str()))
+=======
+            rprt.append('Normalization:\n\t' + str(self.norm.center_str()) + "\n\t" + str(self.norm.range_str()))
+>>>>>>> temp-branch
         else:
             rprt.append('Normalization: N/A')
         rprt.append('Anomalous pattern cardinality to discard: ' + str(self.apc if self.apc is not None else 'N/A'))
         rprt.append('Features involved:')
         for f_name in self.norm_data.columns:
             feature = self.norm_data[f_name]
+<<<<<<< HEAD
             # import re
             # f_name_new = re.sub('\[.*\]', '', f_name)
             feature_real = self.data[f_name]
@@ -126,16 +147,28 @@ class Report:
                 rprt.append(
                     '\t' + str(f_name) + ': ' + ' mean = Nominal;'
                     + ' std = Nominal;')
+=======
+            feature_real = self.data[f_name]
+            rprt.append(
+                '\t' + str(f_name) + ': ' + ' mean = {:10.3};'.format(feature_real.mean()) + ' std = {:10.3};'.format(
+                    feature_real.std()))
+>>>>>>> temp-branch
         interp = interpretattion(self.norm_data, self.data, self.labels, self.centroids, self.norm)
         rprt.append('Cluster-specific info:')
         for l in self.u_labels:
             rprt.append('Cluster #' + str(l) + ' [' + str(np.count_nonzero(self.labels == l)) + ' entities]:')
+<<<<<<< HEAD
             rprt.append('\tcentroid (real): ' + str(['{0:.3f}'.format(x) for x in interp[l]['centr_real']]))
             rprt.append('\tcentroid (norm): ' + str(['{0:.3f}'.format(x) for x in interp[l]['centr_norm']]))
+=======
+            rprt.append('\tcentroid (real): ' + str(interp[l]['centr_real']))
+            rprt.append('\tcentroid (norm): ' + str(interp[l]['centr_norm']))
+>>>>>>> temp-branch
             rprt.append('\tcentroid (% over/under grand mean): ' + str(interp[l]['ovn']))
             rprt.append(
                 '\tcontribution (proper and cumulative): {:10.2}'.format(interp[l]['scatcl']) + ',{:10.2}'.format(
                     interp[l]['scac']))
+<<<<<<< HEAD
             nado, nido = [], []
             for f, f_name in enumerate(self.norm_data.columns):
                 if interp[l]['ovn'][f] > 30:
@@ -147,6 +180,16 @@ class Report:
             #     TODO CHANGE!!! !!!
             self.clusters[l] = Cluster(l, interp[l]['centr_real'], np.count_nonzero(self.labels == l))
         rprt = [x.replace("\n", "") for x in rprt]
+=======
+            nado, nido = "", ""
+            for f, f_name in enumerate(self.norm_data.columns):
+                if interp[l]['ovn'][f] > 30:
+                    nado += f_name
+                if -interp[l]['ovn'][f] > 30:
+                    nido += f_name
+            rprt.append('\tfeatures significantly larger than average: ' + ("None" if nado == "" else nado))
+            rprt.append('\tfeatures significantly smaller than average: ' + ("None" if nido == "" else nido))
+>>>>>>> temp-branch
         return '\n'.join(rprt)
 
     @staticmethod

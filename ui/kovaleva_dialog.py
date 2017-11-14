@@ -46,6 +46,10 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         # pixmap = pixmap.scaledToWidth(600)
         self.label_pic.setPixmap(pixmap)
         self.verticalLayout.addWidget(self.label_pic)
+<<<<<<< HEAD
+=======
+        # print(os.getcwd() + "/ui/gen_scheme.png")
+>>>>>>> temp-branch
 
 
         self.label = QtWidgets.QLabel(self)
@@ -90,8 +94,12 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
+<<<<<<< HEAD
         self.setFixedSize(800, 800)
 
+=======
+        self.setFixedSize(800,800)
+>>>>>>> temp-branch
 
     @staticmethod
     def open(parent=None):
@@ -106,7 +114,11 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         min_cluster_card = int(self.lineEdit.text())
         K = int(self.lineEdit_2.text())
         size = (int(self.lineEdit_3.text().split('x')[0]), int(self.lineEdit_3.text().split('x')[1]))
+<<<<<<< HEAD
         a = float(self.lineEdit_4.text().replace(',', '.'))
+=======
+        a = float(self.lineEdit_4.text().replace(',','.'))
+>>>>>>> temp-branch
         return min_cluster_card, K, size, a
 
     def retranslateUi(self, Dialog):
@@ -118,7 +130,10 @@ class KovalevaGeneratorDialog(QtWidgets.QDialog):
         self.label_4.setText(_translate("Dialog", "a (box bounds)"))
         # self.label_pic.setText("some random text")
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> temp-branch
 if __name__ == "__main__":
     import sys
 
