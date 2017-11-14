@@ -13,18 +13,13 @@ class UiDialogReport(QtWidgets.QDialog):
     def __init__(self, parent, string):
         super(UiDialogReport, self).__init__(parent)
         self.setObjectName("Dialog")
-<<<<<<< HEAD
         self.resize(1920, 1080)
-=======
-        self.resize(765, 480)
->>>>>>> temp-branch
         self.horizontalLayout = QtWidgets.QHBoxLayout(self)
         self.horizontalLayout.setContentsMargins(2, 2, 2, 2)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.plainTextEdit.setPlainText(string)
-<<<<<<< HEAD
         font = QtGui.QFont()
         font.setFamily('Courier New')
         font.setFixedPitch(True)
@@ -34,11 +29,6 @@ class UiDialogReport(QtWidgets.QDialog):
         self.retranslateUi()
         self.setWindowTitle("Report")
         self.plainTextEdit.setLineWrapMode(QtWidgets.QPlainTextEdit.NoWrap)
-=======
-        self.horizontalLayout.addWidget(self.plainTextEdit)
-        self.retranslateUi()
-        self.setWindowTitle("Report")
->>>>>>> temp-branch
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):

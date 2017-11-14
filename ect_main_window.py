@@ -14,21 +14,12 @@ import pandas as pd
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
-<<<<<<< HEAD
 from clustering.agglomerative.a_ward import a_ward
 from clustering.agglomerative.a_ward_p_beta import a_ward_p_beta
 from clustering.divisive.BiKM_R import BiKM_R
 from clustering.divisive.dePDDP import dePDDP
 from clustering.pattern_initialization.anomalous_cluster import anomalous_cluster
 from clustering.pattern_initialization.anomalous_cluster_p_beta import anomalous_cluster_p_beta
-=======
-from eclustering.agglomerative.a_ward import a_ward
-from eclustering.agglomerative.a_ward_p_beta import a_ward_p_beta
-from eclustering.divisive.BiKM_R import BiKM_R
-from eclustering.divisive.dePDDP import dePDDP
-from eclustering.pattern_initialization.anomalous_cluster import anomalous_cluster
-from eclustering.pattern_initialization.anomalous_cluster_p_beta import anomalous_cluster_p_beta
->>>>>>> temp-branch
 from report import Report
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
@@ -36,10 +27,7 @@ from ui.PlotInfo import PlotInfo
 from ui.kovaleva_dialog import KovalevaGeneratorDialog
 from ui.progress import ProgressDialog
 from ui.rand_dir_dialog import RandDirDialog
-<<<<<<< HEAD
 from ui.ui_cluster_table import UiDialogCLusterTable
-=======
->>>>>>> temp-branch
 from ui.ui_dialog_normalization import NormalizationDialog
 from ui.ui_dialog_report import UiDialogReport
 from ui.ui_dialog_run_clustering import RunClusteringDialog
@@ -118,14 +106,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
     def action_generate(self):
         kgd = KovalevaGeneratorDialog.open(self)
         if kgd:
-<<<<<<< HEAD
             data, labels = kovaleva(*kgd)
             # data = kovaleva(*kgd)
             # data = np.column_stack(data)
-=======
-            data = kovaleva(*kgd)
-            data = np.column_stack(data)
->>>>>>> temp-branch
             fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save new data as', 'gen_data.csv')[0]
             np.savetxt(fileName, data, delimiter=',', comments='',
                        header=','.join(['F' + str(i) for i in range(data.shape[1])]))
@@ -152,13 +135,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
                 for uv in unique_values:
                     new_col = pd.Series(data=0, index=ds.index)
                     new_col[ds == uv] = 1
-<<<<<<< HEAD
                     df[ds.name + str('[' + uv + ']')] = new_col
                     if len(unique_values) == 2:
                         break
-=======
-                    df[ds.name + str(uv)] = new_col
->>>>>>> temp-branch
                 model = NormalizedTableModel(df, self.settings.normalization)
                 self.ui.table_normalized.setModel(model)
 
@@ -231,19 +210,12 @@ class EctMainWindow(QtWidgets.QMainWindow):
         menu.popup(table.horizontalHeader().mapToGlobal(point))
 
     def action_report(self):
-<<<<<<< HEAD
         report = Report.get_report()
         ui = UiDialogReport(self, str(report))
         ui.open()
         ui.showMaximized()
         ctabel = UiDialogCLusterTable(self, report)
         ctabel.open()
-=======
-        print('report')
-        ui = UiDialogReport(self, str(Report.get_report()))
-        ui.open()
-        ui.show()
->>>>>>> temp-branch
 
     def action_set_as_index(self, column):
         table = self.ui.table_raw
@@ -290,11 +262,7 @@ class EctMainWindow(QtWidgets.QMainWindow):
         plt.grid(True)
         plt.show()
 
-<<<<<<< HEAD
     def __action_plot_svd(self, data, centroids=None):
-=======
-    def __action_plot_svd(self, data):
->>>>>>> temp-branch
         if data is None or len(data) == 0:
             QMessageBox.question(self, 'Nothing to plot',
                                  'There is no data to plot.',
@@ -323,7 +291,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
         else:
             plt.scatter(U[:, 0] * np.sqrt(mu[0]), U[:, 1] * np.sqrt(mu[1]), s=150, marker='o', color='b')
         plt.grid(True)
-<<<<<<< HEAD
 
         colors = cycle(clist)  # reset colors
         if centroids is not None:
@@ -332,23 +299,17 @@ class EctMainWindow(QtWidgets.QMainWindow):
                 c_svd = centroid.dot(Vt.T[:, 0:2]) / np.sqrt(mu[0:2])
                 plt.scatter(c_svd[0], c_svd[1], s=800, marker='*', edgecolor='black', linewidth='3', facecolor=c)
                 # plt.scatter(c_svd[0], c_svd[1], s=400, marker='o', color=c)
-=======
->>>>>>> temp-branch
         plt.show()
 
     def action_plot_svd_norm(self):
         data = self.ui.table_normalized.model().get_actual_data()
         del data[data.columns[-1]]
-<<<<<<< HEAD
         centroids = None
         try:
             centroids = Report.get_report().centroids
         except:
             pass
         self.__action_plot_svd(data, centroids)
-=======
-        self.__action_plot_svd(data)
->>>>>>> temp-branch
 
     def action_plot_svd_raw(self):
         data = self.ui.table_raw.model().get_data()
@@ -452,7 +413,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
         if dialog_res.weights is not None:
             data_m = data_m * dialog_res.weights.as_matrix()
 
-<<<<<<< HEAD
         if dialog_res.award_criterion:
             start = time.time()
             # a_labels, centroids = anomalous_cluster(data_m)
@@ -461,8 +421,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
             report.set_labels(labels)
             report.set_alg('anomalous clustering + A-Ward')
 
-=======
->>>>>>> temp-branch
         if dialog_res.minimum_of_density:
             res = RandDirDialog.open(self)
             if res:
@@ -483,13 +441,9 @@ class EctMainWindow(QtWidgets.QMainWindow):
             if dialog_res.minkowski == 2 and not dialog_res.cluster_spec_weights:
                 start = time.time()
                 a_labels, centroids = anomalous_cluster(data_m)
-<<<<<<< HEAD
                 print('a labels:')
                 print(a_labels)
                 labels = a_ward(data_m, dialog_res.n_clusters, labels=a_labels)
-=======
-                labels = a_ward(data, dialog_res.n_clusters, labels=a_labels)
->>>>>>> temp-branch
                 end = time.time()
                 report.set_labels(labels)
                 report.set_alg('anomalous clustering + A-Ward')
@@ -499,7 +453,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
                 p = dialog_res.minkowski
                 beta = 2
                 a_labels, centroids, weights = anomalous_cluster_p_beta(data_m, p, beta)
-<<<<<<< HEAD
 
                 labels = a_ward_p_beta(data_m, p, beta, dialog_res.n_clusters, a_labels, centroids, weights)
                 end = time.time()
@@ -508,18 +461,6 @@ class EctMainWindow(QtWidgets.QMainWindow):
 
         if labels is not None:
             report.set_labels(labels)
-=======
-                labels = a_ward_p_beta(data, p, beta, dialog_res.n_clusters, a_labels, centroids, weights)
-                end = time.time()
-                report.set_labels(labels)
-                report.alg('anomalous clustering + A-ward p,beta')
-
-        if labels is not None:
-            # try:
-            print(str(report))
-            # except:
-            #     print('Error')
->>>>>>> temp-branch
             infoBox = QMessageBox()
             infoBox.setIcon(QMessageBox.Information)
             infoBox.setText("Clustering completed")

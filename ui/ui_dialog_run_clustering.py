@@ -26,7 +26,6 @@ class RunClusteringDialog(QtWidgets.QDialog):
         self.groupBox_3.setObjectName("groupBox_3")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.groupBox_3)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-<<<<<<< HEAD
 
         self.radioButton_11 = QtWidgets.QRadioButton(self.groupBox_3)
         self.radioButton_11.setChecked(True)
@@ -38,12 +37,6 @@ class RunClusteringDialog(QtWidgets.QDialog):
         self.radioButton_8.setObjectName("radioButton_8")
         self.verticalLayout_4.addWidget(self.radioButton_8)
 
-=======
-        self.radioButton_8 = QtWidgets.QRadioButton(self.groupBox_3)
-        self.radioButton_8.setChecked(True)
-        self.radioButton_8.setObjectName("radioButton_8")
-        self.verticalLayout_4.addWidget(self.radioButton_8)
->>>>>>> temp-branch
         # self.radioButton_7 = QtWidgets.QRadioButton(self.groupBox_3)
         # self.radioButton_7.setObjectName("radioButton_7")
         # self.verticalLayout_4.addWidget(self.radioButton_7)
@@ -178,10 +171,7 @@ class RunClusteringDialog(QtWidgets.QDialog):
         # self.radioButton_7.setText(_translate("Dialog", "Anomalously defined"))
         self.radioButton_10.setText(_translate("Dialog", "Set explicitly"))
         self.radioButton_9.setText(_translate("Dialog", "(?) Cross validation"))
-<<<<<<< HEAD
         self.radioButton_11.setText(_translate("Dialog", "A-Ward stop criterion"))
-=======
->>>>>>> temp-branch
 
         self.groupBox_2.setTitle(_translate("Dialog", "2) Minkowski power"))
         self.radioButton_4.setText(_translate("Dialog", "p = 2"))
@@ -191,11 +181,7 @@ class RunClusteringDialog(QtWidgets.QDialog):
         self.groupBox.setTitle(_translate("Dialog", "3) Weights"))
         self.radioButton_2.setText(_translate("Dialog", "No feature weights"))
         self.radioButton.setText(_translate("Dialog", "Cluster-specific weights"))
-<<<<<<< HEAD
         self.radioButton_3.setText(_translate("Dialog", "No cluster-specificity"))
-=======
-        self.radioButton_3.setText(_translate("Dialog", "Uniform weights"))
->>>>>>> temp-branch
 
     def _init_disabled(self):
         self.radioButton.setDisabled(True)
@@ -288,12 +274,8 @@ class RunClusteringDialog(QtWidgets.QDialog):
         except:
             weights = None
 
-<<<<<<< HEAD
         return RunClusteringDialog.Result(self.radioButton_11.isChecked(),
                                           self.radioButton_8.isChecked(),
-=======
-        return RunClusteringDialog.Result(self.radioButton_8.isChecked(),
->>>>>>> temp-branch
                                           self.radioButton_9.isChecked(),
                                           self.radioButton_6.isChecked(),
                                           self.radioButton.isChecked(),
@@ -310,15 +292,10 @@ class RunClusteringDialog(QtWidgets.QDialog):
             return False
 
     class Result:
-<<<<<<< HEAD
         def __init__(self, award_criterion, minimum_of_density, cross_validation, auto_mink, cluster_spec_weights,
                      n_clusters, minkowski,
                      weights):
             self.award_criterion = award_criterion
-=======
-        def __init__(self, minimum_of_density, cross_validation, auto_mink, cluster_spec_weights, n_clusters, minkowski,
-                     weights):
->>>>>>> temp-branch
             self.minimum_of_density = minimum_of_density
             self.cross_validation = cross_validation
             self.n_clusters = n_clusters

@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 from PyQt5 import QtGui
 from PyQt5.QtGui import QColor
 
 __author__ = 'eremeykin'
 import pandas as pd
 from PyQt5 import QtCore
-=======
-__author__ = 'eremeykin'
-from PyQt5 import QtCore, QtGui, QtWidgets
-import pandas as pd
-import numpy as np
->>>>>>> temp-branch
 
 
 class PandasTableModel(QtCore.QAbstractTableModel):
@@ -54,7 +47,6 @@ class PandasTableModel(QtCore.QAbstractTableModel):
         return 0
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
-<<<<<<< HEAD
         i = index.row()
         j = index.column()
         if role == QtCore.Qt.DisplayRole:
@@ -67,15 +59,6 @@ class PandasTableModel(QtCore.QAbstractTableModel):
     def color_injection(self, i, j):
         return QtCore.QVariant()
 
-=======
-        if role == QtCore.Qt.DisplayRole:
-            i = index.row()
-            j = index.column()
-            return '{0}'.format(self.datatable.iat[i, j])
-        else:
-            return QtCore.QVariant()
-
->>>>>>> temp-branch
     def headerData(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             c_name = self.datatable.columns.values[col]
@@ -107,11 +90,7 @@ class NormalizedTableModel(PandasTableModel):
 
     def get_actual_data(self):
         nd = self.norm_data.copy()
-<<<<<<< HEAD
         nd['Cluster#'] = self.cluster_column
-=======
-        nd['Cluster#'] =self.cluster_column
->>>>>>> temp-branch
         return nd
 
     def update(self, dataIn):
@@ -149,10 +128,6 @@ class NormalizedTableModel(PandasTableModel):
     def get_norm(self):
         return self.norm
 
-<<<<<<< HEAD
-=======
-
->>>>>>> temp-branch
     def get_data(self):
         return self.norm_data
 
@@ -175,7 +150,6 @@ class WeightTableModel(PandasTableModel):
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         c = list(self.datatable)
-<<<<<<< HEAD
         try:
             self.datatable.set_value(index='W', col=c[index.column()], value=value)
         except:
@@ -234,6 +208,3 @@ class ReportTableModel(PandasTableModel):
                 return QtCore.QVariant("Mean")
             return QtCore.QVariant(str(self.datatable.index.values[col]))
         return QtCore.QVariant()
-=======
-        self.datatable.set_value(index='W', col=c[index.column()], value=value)
->>>>>>> temp-branch
