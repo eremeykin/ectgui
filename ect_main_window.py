@@ -13,13 +13,22 @@ import matplotlib
 import pandas as pd
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from clustering.agglomerative.pattern_initialization.ap_init import APInit
+from clustering.agglomerative.pattern_initialization.ap_init_pb_matlab import APInitPBMatlabCompatible
+from clustering.agglomerative.a_ward import AWard
+from clustering.agglomerative.a_ward_pb import AWardPB
+from clustering.agglomerative.ik_means.ik_means import IKMeans
+from clustering.agglomerative.utils.matlab_compatible import IMWKMeansClusterStructureMatlabCompatible
 
-from clustering.agglomerative.a_ward import a_ward
-from clustering.agglomerative.a_ward_p_beta import a_ward_p_beta
-from clustering.divisive.BiKM_R import BiKM_R
-from clustering.divisive.dePDDP import dePDDP
-from clustering.pattern_initialization.anomalous_cluster import anomalous_cluster
-from clustering.pattern_initialization.anomalous_cluster_p_beta import anomalous_cluster_p_beta
+from clustering.divisive.depddp import DEPDDP
+from clustering.divisive.bikm_r import BiKMeansR
+# from clustering.agglomerative.a_ward_p_beta import a_ward_p_beta
+
+# from clustering.agglomerative.a_ward import a_ward
+# from clustering.agglomerative.pattern_initialization import anomalous_cluster
+# from clustering.agglomerative.pattern_initialization import anomalous_cluster_p_beta
+# from clustering.divisive.BiKM_R import BiKM_R
+# from clustering.divisive.dePDDP import dePDDP
 from report import Report
 from settings import Settings
 from table_models import RawTableModel, NormalizedTableModel
@@ -416,7 +425,13 @@ class EctMainWindow(QtWidgets.QMainWindow):
         if dialog_res.award_criterion:
             start = time.time()
             # a_labels, centroids = anomalous_cluster(data_m)
-            labels = a_ward(data_m, labels=None)
+            run_ap_init = APInit(data_m)
+            run_ap_init()
+            run_ik_means = IKMeans(run_ap_init.cluster_structure)
+            run_ik_means()
+            cs = run_ik_means.cluster_structure
+            run_a_ward = AWard(cs, alpha=0.5)
+            labels = run_a_ward()
             end = time.time()
             report.set_labels(labels)
             report.set_alg('anomalous clustering + A-Ward')
@@ -426,13 +441,15 @@ class EctMainWindow(QtWidgets.QMainWindow):
             if res:
                 if not res[0]:
                     start = time.time()
-                    labels = dePDDP(data_m)
+                    run_depddp = DEPDDP(data_m)
+                    labels = run_depddp()
                     end = time.time()
                     report.set_labels(labels)
                     report.set_alg('dePDDP (Principal Direction Divisive Partitioning)')
                 else:
                     start = time.time()
-                    labels = BiKM_R(data_m, res[1], res[2])
+                    run_bikmeansr = BiKMeansR(data_m, epsilon=res[1], directions_num=res[2])
+                    labels = run_bikmeansr()
                     end = time.time()
                     report.set_labels(labels)
                     report.set_alg('BiKM-R (Bisecting K-Means divisive clustering)')
@@ -440,21 +457,30 @@ class EctMainWindow(QtWidgets.QMainWindow):
         if dialog_res.n_clusters is not None:
             if dialog_res.minkowski == 2 and not dialog_res.cluster_spec_weights:
                 start = time.time()
-                a_labels, centroids = anomalous_cluster(data_m)
-                print('a labels:')
-                print(a_labels)
-                labels = a_ward(data_m, dialog_res.n_clusters, labels=a_labels)
+                run_ap_init = APInit(data_m)
+                run_ap_init()
+                run_ik_means = IKMeans(run_ap_init.cluster_structure)
+                run_ik_means()
+                cs = run_ik_means.cluster_structure
+                run_a_ward = AWard(cs, k_star=dialog_res.n_clusters)
+                labels = run_a_ward()
                 end = time.time()
                 report.set_labels(labels)
                 report.set_alg('anomalous clustering + A-Ward')
             else:
                 start = time.time()
-                # a_labels, centroids = anomalous_cluster(data_m)
-                p = dialog_res.minkowski
-                beta = 2
-                a_labels, centroids, weights = anomalous_cluster_p_beta(data_m, p, beta)
 
-                labels = a_ward_p_beta(data_m, p, beta, dialog_res.n_clusters, a_labels, centroids, weights)
+                run_ap_init_pb = APInitPBMatlabCompatible(data_m, p=dialog_res.minkowski, beta=2)
+                run_ap_init_pb()
+                # change cluster structure to matlab compatible
+                clusters = run_ap_init_pb.cluster_structure.clusters
+                new_cluster_structure = IMWKMeansClusterStructureMatlabCompatible(data_m, p=dialog_res.minkowski, beta=2)
+                new_cluster_structure.add_all_clusters(clusters)
+                run_ik_means = IKMeans(new_cluster_structure)
+                run_ik_means()
+                cs = run_ik_means.cluster_structure
+                run_a_ward_pb = AWardPB(cs, k_star=dialog_res.n_clusters)
+                labels = run_a_ward_pb()
                 end = time.time()
                 report.set_labels(labels)
                 report.set_alg('anomalous clustering + A-ward p,beta')
